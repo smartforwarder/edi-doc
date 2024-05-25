@@ -2,7 +2,7 @@
 
 Document for the SmartForwarder EDI. All APIs are regular REST API calls.
 
-## Login and health check APIs
+## Common APIs
 
 ### Login API
 Used to collect a Token for an EDI User. Please contact the admin@smartforwarder.co to get the following informaiton
