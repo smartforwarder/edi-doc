@@ -22,6 +22,16 @@ Used to collect a Token for an EDI User. Please contact the admin@smartforwarder
 POST {{baseUrl}}/auth/local
 Content-Type: application/json
 ```
+**curl example***
+```bash
+curl -X POST {{baseUrl}}/auth/local \
+-H "Content-Type: application/json" \
+-d '{
+   "identifier": "edi-app-id",
+    "password": "edi-app-secret",
+    "shop": "example.smartforwarder.co"
+}'
+```
 
 **Data constraints**
 ```json
@@ -105,6 +115,13 @@ Check the health status
 GET {{baseUrl}}/v1/health
 Authorization: Bearer {{token}}
 Content-Type: application/json
+```
+
+**curl example**
+```bash
+curl {{baseUrl}}/auth/local \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer {{token}}" \
 ```
 
 **Success Response**
