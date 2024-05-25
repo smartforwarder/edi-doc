@@ -184,8 +184,38 @@ Content-Type: application/json
 
 **API POST body**
 
+In the post body, we need the information like following. 
 
-1. containers ext id
+1. MBL fields
+1. HBLs
+    1. HBL1 fields
+        1. containers
+    1. HBL2 fields
+        1. containers
+
+```JSON
+{
+  "mbl_field1": "value1",
+  "mbl_field2": "value2",
+  "hbls": [
+    {
+      "hbl1_field": "value1",
+      "containers": [
+        {"container1": "value" },
+        {"container2": "value" }
+      ]
+    },
+    {
+      "hbl2_field": "value1",
+      "containers": [
+        {"container1": "value" },
+        {"container2": "value" }
+      ]
+    }
+  ]
+}
+```
+
 1. mbl_type (see below)
 1. term
     1. CY-CY
@@ -210,7 +240,6 @@ Content-Type: application/json
     1. ocean_export
     1. air_import
     1. air_export
-1. do we need to have some fields in both shipment and ombl ?
 
 
 | Field Name   | Options   | Explaination  |
