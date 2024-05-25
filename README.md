@@ -271,11 +271,14 @@ Content-Type: application/json
         "id": 456,
         "name": "example shipper"
       },
-      "consignee":154973,
-      "consignee_print_as":"",
-      "notify":134604,
-      "notify_print_as":"",
-      "operator":"202",
+      "consignee":{
+        "id": 4567,
+        "name": "example consignee"
+      },
+      "notify":{
+        "id": 4569,
+        "name": "example notify"
+      },
       "mode":"FCL",
       "last_free_date":null,
       "hbl_release":"original",
