@@ -139,6 +139,16 @@ Content-Type: application/json
   "post_body": "value"
 }
 ```
+**curl example**
+
+```bash
+curl -X POST {{baseUrl}}/v1/shipments \
+-H "Authorization: Bearer {{token}}" \
+-H "Content-Type: application/json" \
+-d '{
+  "post_body": "value"
+}'
+```
 
 **Success Response**
 
