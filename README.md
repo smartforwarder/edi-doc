@@ -1,6 +1,6 @@
 # EDI document 
 
-Document for the SmartForwarder OpenAPI
+Document for the SmartForwarder EDI
 
 ## Supported common parameters
 
@@ -39,7 +39,11 @@ GET /users?_start=10&_limit=10
 ## Login and health check APIs
 
 ### Login API
-Used to collect a Token for an OpenAPI User.
+Used to collect a Token for an EDI User. Please contact the admin@smartforwarder.co to get the following informaiton
+
+1. EDI app id
+1. EDI app secret
+1. Base API url
 
 **URL** : `/auth/local`
 
@@ -56,8 +60,8 @@ Content-Type: application/json
 **Data constraints**
 ```json
 {
-    "identifier": "[OpenAPI username]",
-    "password": "[password in plain text]",
+    "identifier": "[EDI APP ID]",
+    "password": "[EDI APP SECRET]",
     "shop": "[customer name]"
 }
 ```
@@ -66,9 +70,9 @@ Content-Type: application/json
 
 ```json
 {
-    "username": "iloveauth@example.com",
-    "password": "abcd1234",
-    "shop": "longtemp.smartforwarder.co"
+    "identifier": "edi-app-id",
+    "password": "edi-app-secret",
+    "shop": "example.smartforwarder.co"
 }
 ```
 
@@ -87,7 +91,7 @@ Content-Type: application/json
 
 **Error Response**
 
-**Condition** : If 'username' and 'password' combination is wrong.
+**Condition** : If 'identifier' and 'password' combination is wrong.
 
 **Code** : `400 BAD REQUEST`
 
@@ -146,5 +150,155 @@ Content-Type: application/json
 ```json
 {
   "success": true
+}
+```
+
+## Shipment APIs
+
+### Create a new shipment
+
+**URL** : `/v1/shipments`
+
+**Method** : `POST`
+
+**Auth required** : YES
+
+**API call**
+```
+POST {{baseUrl}}/v1/shipments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+```
+
+**Success Response**
+
+**Code** : `200 OK`
+
+**Content example**
+
+```json
+{
+  "success": true
+}
+```
+
+**API POST body**
+
+
+1. containers ext id
+1. mbl_type (see below)
+1. term
+    1. CY-CY
+    1. CFS-CFS
+    1. and more
+1. obl_type
+1. mode
+    1. FCL
+    1. LCL
+    1. CONS
+    1. BULK
+    1. AIR
+1. carrier
+1. weightUnit
+    1. KG
+    1. LB
+1. volumeUnit
+    1. CBM
+    1. CFT
+1. type
+    1. ocean_import
+    1. ocean_export
+    1. air_import
+    1. air_export
+1. do we need to have some fields in both shipment and ombl ?
+
+
+| Field Name   | Options   | Explaination  |
+|------------|:----------:|-----------:|
+| mbl_type | CL | CO-LOAD |
+| | CS | |
+| | DR | |
+| | DR | |
+| | FW | |
+| | NR | Normal |
+| | TP | |
+| | TR | |
+| | OT | |
+
+```JSON
+{
+  "mbl_no":"MBL-number",
+  "office":"20",
+  "mbl_type":"NR",
+  "carrier_booking_no":"CARRIER_BOOKING_NUMBER",
+  "carrier":{
+    "id": 123,
+    "name": "example carrier"
+  },
+  "vessel":"VESSEL",
+  "voyage":"VOYAGE",
+  "port_of_loading":" (CNNBO)NINGBO, ZJ, CHINA",
+  "etd":"2024-05-25",
+  "port_of_discharge":" (USNYC)NEW YORK, NY, US",
+  "eta":"2024-05-31",
+  "mode":"FCL",
+  "term":"CY-CY",
+  "obl_type":"original",
+  "containers":[
+    {
+      "ext_id":"new_167097",
+      "name":"CNT1234567",
+      "seal_number":"SEAL-NUMBER",
+      "size":"40",
+      "type":"RF",
+      "pieces":1,
+      "weight":200,
+      "measure":300,
+      "mark":"N/M"
+    }
+  ],
+  "pieces":1,
+  "weight":200,
+  "weightUnit":"KG",
+  "measure":300,
+  "volumeUnit":"CBM",
+  "hbls":[
+    {
+      "hbl_no":"HBL-NUMBER",
+      "ams_no":"AMS-NUMBER",
+      "isf_no":"ISF-NUMBER",
+      "shipper":{
+        "id": 456,
+        "name": "example shipper"
+      },
+      "consignee":154973,
+      "consignee_print_as":"",
+      "notify":134604,
+      "notify_print_as":"",
+      "operator":"202",
+      "mode":"FCL",
+      "last_free_date":null,
+      "hbl_release":"original",
+      "cargo_type":"NOR",
+      "containers":[
+        {
+          "name":"CNT1234567",
+          "seal_number":"SEAL-123456",
+          "size":"40",
+          "type":"ODO",
+          "pieces":1,
+          "weight":20,
+          "measure":30,
+          "mark":"N/M"
+        }
+      ],
+      "pieces":1,
+      "weight":20,
+      "weightUnit":"KG",
+      "measure":30,
+      "volumeUnit":"CBM"
+    }
+  ],
+  "type":"ocean_import"
 }
 ```
