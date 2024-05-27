@@ -251,10 +251,12 @@ In the post body, we need the information like following.
 | | TR | |
 | | OT | |
 
+
+
+
 ```JSON
 {
   "mbl_no":"MBL-number",
-  "office":"20",
   "mbl_type":"NR",
   "carrier_booking_no":"CARRIER_BOOKING_NUMBER",
   "carrier":{
@@ -331,3 +333,253 @@ In the post body, we need the information like following.
   "type":"ocean_import"
 }
 ```
+
+#### Contact Type
+
+For contact type, we support the following fields
+
+
+| Field                                     | Value                  |
+|-------------------------------------------|------------------------|
+| id | 123: the id in the original system |
+| name | cosco shipping line |
+| short_name | cosco |
+| address | World Business Center, Xiaoshan District, Hangzhou |
+| country | CN |
+| city | Hangzhou |
+
+
+#### Shipment supported fields 
+
+| Field                                    | Value                                    |
+|------------------------------------------|------------------------------------------|
+| mbl_no                                   | OOLU2735700604                           |
+| agent                                    | contact type                                     |
+| carrier                                  | contact type                                   |
+| coloader                                 | contact type                                     |
+| mode                                     | FCL                                      |
+| term                                     | CY-DOOR                                  |
+| agent_ref_no                             | NULL                                     |
+| sub_bl_no                                | NULL                                     |
+| carrier_contract_no                      | NULL                                     |
+| eta                                      | 2024-05-02                               |
+| etd                                      | NULL                                     |
+| atd                                      | NULL                                     |
+| ata                                      | NULL                                     |
+| etb                                      | NULL                                     |
+| final_eta                                | NULL                                     |
+| port_of_discharge                        | LONGBEACH                                |
+| port_of_transit                          | NULL                                     |
+| port_of_loading                          | (CNSGH)SHANGHAI, SH, CHINA               |
+| vessel                                   | OOCL EGYPT 059E                          |
+| voyage                                   | 059E                                     |
+| place_of_delivery                        | NULL                                     |
+| place_of_delivery_original_location      | NULL                                     |
+| place_of_delivery_eta                    | NULL                                     |
+| final_destination                        | NULL                                     |
+| final_destination_original_location      | NULL                                     |
+| mbl_type                                 | NR                                       |
+| cy_location                              | NULL                                     |
+| cfs_location                             | NULL                                     |
+| freight_payment                          | PREPAID                                  |
+| obl_type                                 | seaway_bill                              |
+| original_bl_received_date                | NULL                                     |
+| telex_release_received_date              | NULL                                     |
+| release_date                             | 2024-05-01                               |
+| place_of_receipt                         | NULL                                     |
+| place_of_receipt_original_location       | NULL                                     |
+| place_of_receipt_etd                     | NULL                                     |
+| container_return_location                | NULL                                     |
+| it_no                                    | NULL                                     |
+| it_date                                  | NULL                                     |
+| it_place                                 | NULL                                     |
+| freight_charge_weight                    | NULL                                     |
+| entry_date                               | NULL                                     |
+| shipper                                  | contact type                                     |
+| consignee                                | contact type                                     |
+| notify                                   | contact type                                     |
+| additional_notify                        | NULL                                     |
+| original_bl_released_date                | NULL                                     |
+| cargo_type                               | NULL                                     |
+| customer                                 | contact type                                     |
+| bill_to                                  | contact type                                     |
+| customer_ref_no                          | NULL                                     |
+| last_e_tracking_date                     | NULL                                     |
+| original_code                            | NULL                                     |
+| post_at                                  | NULL                                     |
+| hbl_no                                   | NULL                                     |
+| trucker                                  | contact type                                     |
+| ship_type                                | NULL                                     |
+| commodity                                | NULL                                     |
+| package                                  | NULL                                     |
+| pieces                                   | 1                                        |
+| weight                                   | NULL                                     |
+| measure                                  | NULL                                     |
+| commodity_info                           | NULL                                     |
+| pickup_number                            | NULL                                     |
+| weightUnit                               | KG                                       |
+| volumeUnit                               | CBM                                      |
+| doc_cut_off_time                         | NULL                                     |
+| port_cut_off_time                        | NULL                                     |
+| vgm_cut_off_time                         | NULL                                     |
+| rail_cut_off_time                        | NULL                                     |
+| po_no                                    | NULL                                     |
+| itn_no                                   | NULL                                     |
+| cfs_contact                              | NULL                                     |
+| cfs_phone                                | NULL                                     |
+| mark                                     | NULL                                     |
+| shipping_agency                          | NULL                                     |
+| carrier_booking_no                       | O2735700604                           |
+| doc_cut_off_date                         | NULL                                     |
+| port_cut_off_date                        | NULL                                     |
+| rail_cut_off_date                        | NULL                                     |
+| doc_cut_off_hour                         | NULL                                     |
+| port_cut_off_hour                        | NULL                                     |
+| rail_cut_off_hour                        | NULL                                     |
+| forwarding_agent                         | contact type                                     |
+| arrival_notice_remark                    | NULL                                     |
+| delivery_order_remark                    | NULL                                     |
+| soc_address                              | NULL                                     |
+| final_eta_hour                           | NULL                                     |
+| on_board_date                            | NULL                                     |
+| delivery_location                        | NULL                                     |
+| pickup_location                          | NULL                                     |
+| broker                                   | contact type                                     |
+| last_free_date                           | NULL                                     |
+| arrival_notice_sent_date                 | NULL                                     |
+| delivery_order_sent_date                 | NULL                                     |
+| chargeable_weight                        | NULL                                     |
+| chargeable_weight_unit                   | NULL                                     |
+| customer_booking_no                      | NULL                                     |
+
+
+#### HBL supported fields
+
+| Field                                     | Type                  |
+|-------------------------------------------|------------------------|
+| hbl_no                                    | string               |
+| customer                                  | contact type                 |
+| bill_to                                   | contact type                   |
+| shipper                                   | contact type|
+| consignee                                 | contact type|
+| notify                                    | contact type                   |
+| additional_notify                         | contact type                   |
+| agent                                     | contact type                   |
+| trucker                                   | contact type                 |
+| broker                                    | contact type                   |
+| po_no                                     | string                   |
+| ams_no                                    | string                   |
+| isf_no                                    | string                   |
+| cycfs_location                            | contact type                   |
+| available_date                            | date                   |
+| place_of_delivery                         | string                   |
+| place_of_delivery_original_location       | string                   |
+| place_of_delivery_eta                     | date                   |
+| final_destination                         | NULL                   |
+| final_destination_original_location       | NULL                   |
+| final_eta                                 | NULL                   |
+| delivery_location                         | NULL                   |
+| mode                                      | FCL                    |
+| freight_payment                           | NULL                   |
+| last_free_date                            | 2024-05-09             |
+| rail                                      | NULL                   |
+| rail_company                              | NULL                   |
+| it_no                                     | NULL                   |
+| it_date                                   | NULL                   |
+| it_place                                  | NULL                   |
+| go_date                                   | NULL                   |
+| expiry_date                               | NULL                   |
+| hbl_release                               | telex                  |
+| sales_type                                | NULL                   |
+| incoterms                                 | NULL                   |
+| cargo_type                                | NOR                    |
+| term                                      | NULL                   |
+| entry_no                                  | NULL                   |
+| entry_doc_sent_date                       | NULL                   |
+| original_bl_received_date                 | NULL                   |
+| telex_release_received_date               | date            |
+| is_release_order_required                 | NULL                   |
+| hold_notes                                | NULL                   |
+| hold_reason                               | NULL                   |
+| release_date                              | date             |
+| door_delivery_date                        | NULL                   |
+| arrival_notice_sent_date                  | date: 2024-05-02             |
+| delivery_order_sent_date                  | NULL                   |
+| commodity                                 | NULL                   |
+| package                                   | NULL                   |
+| pieces                                    | NULL                   |
+| weight                                    | NULL                   |
+| measure                                   | NULL                   |
+| commodity_info                            | NULL                   |
+| pickup_number                             | NULL                   |
+| weightUnit                                | KG                     |
+| volumeUnit                                | CBM                    |
+| entry_date                                | NULL                   |
+| mark                                      | string |
+| arrival_notice_remark                     | NULL                   |
+| delivery_order_remark                     | NULL                   |
+| additional_delivery_location              | NULL                   |
+| commercial_invoice_no                     | NULL                   |
+| soc_address                               | NULL                   |
+| chargeable_weight                         | NULL                   |
+| rate_class                                | NULL                   |
+| chargeable_weight_unit                    | NULL                   |
+| nature_quantity_of_goods                  | NULL                   |
+| other_charges                             | NULL                   |
+| original_bl_released_date                 | NULL                   |
+| original_code                             | NULL                   |
+| loading_location                          | NULL                   |
+| origin_terminal                           | NULL                   |
+| hbl_type                                  | seaway_bill            |
+| itn_no                                    | NULL                   |
+| forwarding_agent                          | contact type|
+| sub_bl_no                                 | NULL                   |
+| place_of_receipt                          | NULL                   |
+| place_of_receipt_original_location        | NULL                   |
+| place_of_receipt_etd                      | NULL                   |
+| pickup_location                           | NULL                   |
+| carrier_booking_no                        | NULL                   |
+| equipment_origin                          | NULL                   |
+| on_board_date                             | NULL                   |
+| booking_requested_date                    | NULL                   |
+| booking_confirmed_date                    | NULL                   |
+| ci_pl_received_date                       | NULL                   |
+| isf_filed_date                            | NULL                   |
+| hbl_issued_date                           | NULL                   |
+| document_approved_date                    | NULL                   |
+| ams_accepted_date                         | NULL                   |
+| delivery_trucker                          | NULL                   |
+| container_return_location                 | NULL                   |
+| delivery_pickup_date                      | NULL                   |
+| equipment_return_date                     | NULL                   |
+
+#### Container supported fields 
+
+| Field                | Value                                    |
+|----------------------|------------------------------------------|
+| name                 | ABCD9298668                              |
+| type                 | HC                                       |
+| pieces               | 900                                      |
+| pickup_number        | NULL                                     |
+| seal_number          | EFGH123                                 |
+| weight               | 12690.00                                 |
+| size                 | 40                                       |
+| measure              | 68.000                                   |
+| pickup_date          | NULL                                     |
+| move_date            | NULL                                     |
+| delivery_date        | NULL                                     |
+| return_date          | NULL                                     |
+| soc                  | 0                                        |
+| gatein_date          | NULL                                     |
+| mark                 | N/M                                      |
+| weightUnit           | KG                                       |
+| volumeUnit           | CBM                                      |
+| last_free_date       | NULL                                     |
+| discharged_date      | NULL                                     |
+| it_number            | NULL                                     |
+| rail_bl              | NULL                                     |
+| iso_container_type   | NULL                                     |
+| country_origin       | NULL                                     |
+| original_code        | NULL                                     |
+| po_no                | NULL                                     |
+| commodity_info       | NULL                                     |
