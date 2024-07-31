@@ -246,63 +246,7 @@ In the post body, we need the information like following.
    1. air_import
    1. air_export
 
-MBL Types:
 
-| Options | Explaination |
-| :-----: | -----------: |
-|   CL    |      CO-LOAD |
-|   CS    |  Consol|
-|   DR    |  Direct             |
-|   DP    |  Direct Triangle |
-|   FW    |   Forwarding|
-|   NR    |       Normal |
-|   TP    |  Third Party |
-|   TR    |  Triangle |
-|   OT    |  Other |
-
-Term Types:
-| Options | Explaination |
-| :-----: | -----------: |
-|  BT| BT|
-|  CFS| CFS|
-|  CY| CY|
-|  DOOR| DOOR|
-|  FI| FI|
-|  FO| FO|
-|  FT| FOT|
-|  RAMP| RAMP |
-|  TK | TACKLE |
-
-OBL Types:
-
-| Options | Explaination |
-| :-----: | -----------: |
-|   ORIGINAL BILL OF LADING    |      original |
-|   telex    |  TELEX|
-|   seaway_bill    |  SEAWAY BILL           |
-|   e_bill    |  E-BILL |
-
-Freight Payment
-
-| Options | Explaination |
-| :-----: | -----------: |
-|   prepaid    |      prepaid |
-|   collect |  collect |
-
-HBL Release
-
-| Options | Explaination |
-| :-----: | -----------: |
-|   original | original |
-|   telex |  telex |
-
-Sales Type
-
-| Options | Explaination |
-| :-----: | -----------: |
-|   C | CO-LOAD|
-|   F |  FREE CARGO |
-|   N |  NOMI |
 
 
 ```JSON
@@ -642,3 +586,64 @@ For contact type, we support the following fields
 | original_code      | NULL        |
 | po_no              | NULL        |
 | commodity_info     | NULL        |
+
+### Enum types 
+
+#### MBL Types:
+
+| Options | Explaination |
+| :-----: | -----------: |
+|   CL    |      CO-LOAD |
+|   CS    |  Consol|
+|   DR    |  Direct             |
+|   DP    |  Direct Triangle |
+|   FW    |   Forwarding|
+|   NR    |       Normal |
+|   TP    |  Third Party |
+|   TR    |  Triangle |
+|   OT    |  Other |
+
+#### Term Types:
+
+| Options | Explaination |
+| :-----: | -----------: |
+|  BT| BT|
+|  CFS| CFS|
+|  CY| CY|
+|  DOOR| DOOR|
+|  FI| FI|
+|  FO| FO|
+|  FT| FOT|
+|  RAMP| RAMP |
+|  TK | TACKLE |
+
+#### OBL Types:
+
+| Options | Explaination |
+| :-----: | -----------: |
+|   ORIGINAL BILL OF LADING    |      original |
+|   telex    |  TELEX|
+|   seaway_bill    |  SEAWAY BILL           |
+|   e_bill    |  E-BILL |
+
+#### Freight Payment
+
+| Options | Explaination |
+| :-----: | -----------: |
+|   prepaid    |      prepaid |
+|   collect |  collect |
+
+#### HBL Release
+
+| Options | Explaination |
+| :-----: | -----------: |
+|   original | original |
+|   telex |  telex |
+
+#### Sales Type
+
+| Options | Explaination |
+| :-----: | -----------: |
+|   C | CO-LOAD|
+|   F |  FREE CARGO |
+|   N |  NOMI |
