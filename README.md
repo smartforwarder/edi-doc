@@ -153,7 +153,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "post_body": "value"
+  "field": "value"
 }
 ```
 **curl example**
@@ -163,7 +163,7 @@ curl -X POST {{baseUrl}}/v1/shipments \
 -H "Authorization: Bearer {{token}}" \
 -H "Content-Type: application/json" \
 -d '{
-  "post_body": "value"
+  "field": "value"
 }'
 ```
 
@@ -196,14 +196,16 @@ In the post body, we need the information like following.
   "mbl_field2": "value2",
   "hbls": [
     {
-      "hbl1_field": "value1",
+      "hbl1_field1": "value1",
+      "hbl1_field2": "value2",
       "containers": [
         {"container1": "value" },
         {"container2": "value" }
       ]
     },
     {
-      "hbl2_field": "value1",
+      "hbl2_field1": "value1",
+      "hbl2_field2": "value2",
       "containers": [
         {"container1": "value" },
         {"container2": "value" }
