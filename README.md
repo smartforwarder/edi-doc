@@ -647,3 +647,15 @@ For contact type, we support the following fields
 |   C | CO-LOAD|
 |   F |  FREE CARGO |
 |   N |  NOMI |
+
+
+#### Cargo Type
+
+| Options | Explaination |
+| :-----: | -----------: |
+| AUT | AUTOMOBILE (NON-HAZ)|
+| BAT | BATTERY|
+| NOR | GENERAL CARGO|
+| DGG | HAZARDOUS|
+| REF | REFRIGERATED|
+| SPC | SPECIAL|
