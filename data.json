@@ -1,5 +1,5 @@
 {
-  "mbl_no": "MBL-number",
+  "mbl_no": "PVHJ928328",
   "mbl_type": "NR",
   "carrier_booking_no": "CARRIER_BOOKING_NUMBER",
   "carrier": {
@@ -15,7 +15,6 @@
   "mode": "FCL",
   "term": "CY-CY",
   "obl_type": "original",
-
   "pieces": 1,
   "weight": 200,
   "weightUnit": "KG",
@@ -37,7 +36,7 @@
   },
   "hbls": [
     {
-      "hbl_no": "HBL-NUMBER",
+      "hbl_no": "JSWY760048",
       "ams_no": "AMS-NUMBER",
       "isf_no": "ISF-NUMBER",
       "shipper": {
