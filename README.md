@@ -659,3 +659,29 @@ For contact type, we support the following fields
 | DGG | HAZARDOUS|
 | REF | REFRIGERATED|
 | SPC | SPECIAL|
+
+
+#### Mode 
+
+| Options | Explaination |
+| :-----: | -----------: |
+| FCL | FCL |
+| LCL | LCL |
+| CONS | CONS |
+| BULK | BULK |
+| AIR | AIR |
+
+
+#### weightUnit
+
+| Options | Explaination |
+| :-----: | -----------: |
+| KG | KG |
+| LB | LB |
+
+#### volumeUnit
+
+| Options | Explaination |
+| :-----: | -----------: |
+| CBM | CBM |
+| CFT | CFT |
