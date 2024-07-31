@@ -249,17 +249,21 @@ In the post body, we need the information like following.
    1. air_import
    1. air_export
 
-| Field Name | Options | Explaination |
-| ---------- | :-----: | -----------: |
-| mbl_type   |   CL    |      CO-LOAD |
-|            |   CS    |  Consol|
-|            |   DR    |  Direct             |
-|            |   DP    |  Direct Triangle |
-|            |   FW    |   Forwarding|
-|            |   NR    |       Normal |
-|            |   TP    |  Third Party |
-|            |   TR    |  Triangle |
-|            |   OT    |  Other |
+MBL Type:
+
+| Options | Explaination |
+| :-----: | -----------: |
+|   CL    |      CO-LOAD |
+|   CS    |  Consol|
+|   DR    |  Direct             |
+|   DP    |  Direct Triangle |
+|   FW    |   Forwarding|
+|   NR    |       Normal |
+|   TP    |  Third Party |
+|   TR    |  Triangle |
+|   OT    |  Other |
+
+
 
 ```JSON
 {
