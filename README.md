@@ -282,6 +282,29 @@ OBL Types:
 |   seaway_bill    |  SEAWAY BILL           |
 |   e_bill    |  E-BILL |
 
+Freight Payment
+
+| Options | Explaination |
+| :-----: | -----------: |
+|   prepaid    |      prepaid |
+|   collect |  collect |
+
+HBL Release
+
+| Options | Explaination |
+| :-----: | -----------: |
+|   original | original |
+|   telex |  telex |
+
+Sales Type
+
+| Options | Explaination |
+| :-----: | -----------: |
+|   C | CO-LOAD|
+|   F |  FREE CARGO |
+|   N |  NOMI |
+
+
 ```JSON
 {
   "ombl": {
