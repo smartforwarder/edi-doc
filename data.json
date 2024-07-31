@@ -1,20 +1,22 @@
 {
-  "mbl_type": "NR",
-  "carrier_booking_no": "CARRIER_BOOKING_NUMBER",
-  "vessel": "VESSEL",
-  "voyage": "VOYAGE",
-  "mode": "FCL",
-  "term": "CY-CY",
-  "obl_type": "original",
-  "pieces": 1,
-  "weight": 200,
-  "weightUnit": "KG",
-  "measure": 300,
-  "volumeUnit": "CBM",
   "ombl": {
-    "mbl_no": "ZMPI300132",
+    "carrier_booking_no": "CARRIER_BOOKING_NUMBER",
+    "weightUnit": "KG",
+    "volumeUnit": "CBM",
+    "weight": 200,
+    "measure": 300,
+    "pieces": 2,
+    "mode": "FCL",
+    "term": "CY-CY",
+    "obl_type": "original",
+    "mbl_no": "UBPT523150",
+    "mbl_type": "NR",
+    "vessel": "VESSEL",
+    "voyage": "VOYAGE",
     "port_of_loading": " (CNNBO)NINGBO, ZJ, CHINA",
     "port_of_discharge": " (USNYC)NEW YORK, NY, US",
+    "mark": "N/M",
+    "commodity_info": "CARGO DESCRIPTION",
     "carrier": {
       "id": 123,
       "name": "example carrier"
@@ -36,7 +38,7 @@
   },
   "hbls": [
     {
-      "hbl_no": "LUOI364434",
+      "hbl_no": "ROJJ479720",
       "ams_no": "AMS-NUMBER",
       "isf_no": "ISF-NUMBER",
       "shipper": {
@@ -67,6 +69,8 @@
           "mark": "N/M"
         }
       ],
+      "mark": "N/M",
+      "commodity_info": "CARGO DESCRIPTION",
       "pieces": 1,
       "weight": 20,
       "weightUnit": "KG",
