@@ -225,18 +225,15 @@ In the post body, we need the information like following.
 ```
 
 1. mbl_type (see below)
-1. term
-   1. CY-CY
-   1. CFS-CFS
-   1. and more
-1. obl_type
+1. term (see below)
+  1. Example: CY-CY
+1. obl_type (see below)
 1. mode
    1. FCL
    1. LCL
    1. CONS
    1. BULK
    1. AIR
-1. carrier
 1. weightUnit
    1. KG
    1. LB
@@ -249,7 +246,7 @@ In the post body, we need the information like following.
    1. air_import
    1. air_export
 
-MBL Type:
+MBL Types:
 
 | Options | Explaination |
 | :-----: | -----------: |
@@ -263,7 +260,27 @@ MBL Type:
 |   TR    |  Triangle |
 |   OT    |  Other |
 
+Term Types:
+| Options | Explaination |
+| :-----: | -----------: |
+|  BT| BT|
+|  CFS| CFS|
+|  CY| CY|
+|  DOOR| DOOR|
+|  FI| FI|
+|  FO| FO|
+|  FT| FOT|
+|  RAMP| RAMP |
+|  TK | TACKLE |
 
+OBL Types:
+
+| Options | Explaination |
+| :-----: | -----------: |
+|   ORIGINAL BILL OF LADING    |      original |
+|   telex    |  TELEX|
+|   seaway_bill    |  SEAWAY BILL           |
+|   e_bill    |  E-BILL |
 
 ```JSON
 {
@@ -367,6 +384,12 @@ For contact type, we support the following fields
 
 | Field                               | Value                      |
 | ----------------------------------- | -------------------------- |
+| type | ocean_import |
+
+#### OMBL supported fields
+
+| Field                               | Value                      |
+| ----------------------------------- | -------------------------- |
 | mbl_no                              | OOLU2735700604             |
 | agent                               | contact type               |
 | carrier                             | contact type               |
@@ -377,11 +400,11 @@ For contact type, we support the following fields
 | sub_bl_no                           | NULL                       |
 | carrier_contract_no                 | NULL                       |
 | eta                                 | 2024-05-02                 |
-| etd                                 | NULL                       |
-| atd                                 | NULL                       |
-| ata                                 | NULL                       |
-| etb                                 | NULL                       |
-| final_eta                           | NULL                       |
+| etd                                 | 2024-05-02                       |
+| atd                                 | 2024-05-02                       |
+| ata                                 | 2024-05-02                       |
+| etb                                 | 2024-05-02                       |
+| final_eta                           | 2024-05-02                       |
 | port_of_discharge                   | LONGBEACH                  |
 | port_of_transit                     | NULL                       |
 | port_of_loading                     | (CNSGH)SHANGHAI, SH, CHINA |
