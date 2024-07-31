@@ -4,6 +4,7 @@ const axios = require("axios");
 const data = require("./data.json");
 const fs = require("fs");
 const { faker } = require("@faker-js/faker");
+const moment = require("moment");
 const API = "http://localhost:1337";
 dotenv.config();
 
@@ -33,9 +34,11 @@ async function main() {
 }
 
 async function getFakeData() {
-  data.mbl_no =
+  data.ombl.mbl_no =
     faker.string.alpha({ length: 4, casing: "upper" }) +
     faker.string.numeric(6);
+  data.ombl.eta = moment().add(30, 'days').toISOString().split('T')[0];
+  data.ombl.etd = moment().toISOString().split('T')[0];
   data.hbls = data.hbls.map((hbl) => {
     hbl.hbl_no =
       faker.string.alpha({ length: 4, casing: "upper" }) +

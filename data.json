@@ -1,17 +1,8 @@
 {
-  "mbl_no": "PVHJ928328",
   "mbl_type": "NR",
   "carrier_booking_no": "CARRIER_BOOKING_NUMBER",
-  "carrier": {
-    "id": 123,
-    "name": "example carrier"
-  },
   "vessel": "VESSEL",
   "voyage": "VOYAGE",
-  "port_of_loading": " (CNNBO)NINGBO, ZJ, CHINA",
-  "etd": "2024-05-25",
-  "port_of_discharge": " (USNYC)NEW YORK, NY, US",
-  "eta": "2024-05-31",
   "mode": "FCL",
   "term": "CY-CY",
   "obl_type": "original",
@@ -21,6 +12,13 @@
   "measure": 300,
   "volumeUnit": "CBM",
   "ombl": {
+    "mbl_no": "ZMPI300132",
+    "port_of_loading": " (CNNBO)NINGBO, ZJ, CHINA",
+    "port_of_discharge": " (USNYC)NEW YORK, NY, US",
+    "carrier": {
+      "id": 123,
+      "name": "example carrier"
+    },
     "containers": [
       {
         "name": "CNT1234567",
@@ -32,11 +30,13 @@
         "measure": 300,
         "mark": "N/M"
       }
-    ]
+    ],
+    "eta": "2024-08-30",
+    "etd": "2024-07-31"
   },
   "hbls": [
     {
-      "hbl_no": "JSWY760048",
+      "hbl_no": "LUOI364434",
       "ams_no": "AMS-NUMBER",
       "isf_no": "ISF-NUMBER",
       "shipper": {
