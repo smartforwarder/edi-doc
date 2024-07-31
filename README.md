@@ -1,16 +1,17 @@
 # EDI document
 
-Document for the SmartForwarder EDI. All APIs are regular REST API calls.
+The Login API is used to collect a Token for an EDI User. This token is required to authenticate subsequent API calls.
+
 
 ## Common APIs
 
 ### Login API
 
-Used to collect a Token for an EDI User. Please contact the admin@smartforwarder.co to get the following informaiton
+To use the Login API, please contact the administrator at admin@smartforwarder.co to obtain the following information
 
-1. EDI app id
-1. EDI app secret
-1. Base API url
+1.	EDI App ID: A unique identifier for your EDI application.
+2.	EDI App Secret: A secret key associated with your EDI application.
+3.	Base API URL: The root URL for the API endpoints.
 
 **URL** : `/auth/local`
 
