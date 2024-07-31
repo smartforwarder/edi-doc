@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 const dotenv = require("dotenv");
 const axios = require("axios");
+const data = require("./data.json");
+const API = "http://localhost:1337";
 dotenv.config();
 
 const DEFAULT_HEADERS = {
@@ -10,13 +12,20 @@ const DEFAULT_HEADERS = {
 
 main();
 async function main() {
-  const token = await getToken("http://localhost:1337");
-  console.log(token);
+  const token = await getToken(API);
+  console.log(`Token: ${token}`);
+  const { resp } = await axios.post(`${API}/v1/shipments`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+  console.log(resp);
 }
 
-async function getToken(api) {
+async function getToken() {
   const { data } = await axios.post(
-    `${api}/auth/local`,
+    `${API}/auth/local`,
     {
       identifier: process.env.APPID,
       password: process.env.SECRET,

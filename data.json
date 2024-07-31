@@ -1,0 +1,79 @@
+{
+  "mbl_no": "MBL-number",
+  "mbl_type": "NR",
+  "carrier_booking_no": "CARRIER_BOOKING_NUMBER",
+  "carrier": {
+    "id": 123,
+    "name": "example carrier"
+  },
+  "vessel": "VESSEL",
+  "voyage": "VOYAGE",
+  "port_of_loading": " (CNNBO)NINGBO, ZJ, CHINA",
+  "etd": "2024-05-25",
+  "port_of_discharge": " (USNYC)NEW YORK, NY, US",
+  "eta": "2024-05-31",
+  "mode": "FCL",
+  "term": "CY-CY",
+  "obl_type": "original",
+
+  "pieces": 1,
+  "weight": 200,
+  "weightUnit": "KG",
+  "measure": 300,
+  "volumeUnit": "CBM",
+  "ombl": {
+    "containers": [
+      {
+        "name": "CNT1234567",
+        "seal_number": "SEAL-NUMBER",
+        "size": "40",
+        "type": "RF",
+        "pieces": 1,
+        "weight": 200,
+        "measure": 300,
+        "mark": "N/M"
+      }
+    ]
+  },
+  "hbls": [
+    {
+      "hbl_no": "HBL-NUMBER",
+      "ams_no": "AMS-NUMBER",
+      "isf_no": "ISF-NUMBER",
+      "shipper": {
+        "id": 456,
+        "name": "example shipper"
+      },
+      "consignee": {
+        "id": 4567,
+        "name": "example consignee"
+      },
+      "notify": {
+        "id": 4569,
+        "name": "example notify"
+      },
+      "mode": "FCL",
+      "last_free_date": null,
+      "hbl_release": "original",
+      "cargo_type": "NOR",
+      "containers": [
+        {
+          "name": "CNT1234567",
+          "seal_number": "SEAL-123456",
+          "size": "40",
+          "type": "ODO",
+          "pieces": 1,
+          "weight": 20,
+          "measure": 30,
+          "mark": "N/M"
+        }
+      ],
+      "pieces": 1,
+      "weight": 20,
+      "weightUnit": "KG",
+      "measure": 30,
+      "volumeUnit": "CBM"
+    }
+  ],
+  "type": "ocean_import"
+}
