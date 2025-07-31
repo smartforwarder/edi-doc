@@ -1,32 +1,31 @@
-# EDI document
+# EDI 文档
 
-The Login API is used to collect a Token for an EDI User. This token is required to authenticate subsequent API calls.
+登录 API 用于获取 EDI 用户的令牌。此令牌是后续 API 调用进行身份验证所必需的。
 
+## 通用 API
 
-## Common APIs
+### 登录 API
 
-### Login API
+要使用登录 API，请联系管理员 admin@smartforwarder.co 获取以下信息：
 
-To use the Login API, please contact the administrator at admin@smartforwarder.co to obtain the following information
-
-1.	EDI App ID: A unique identifier for your EDI application.
-2.	EDI App Secret: A secret key associated with your EDI application.
-3.	Base API URL: The root URL for the API endpoints.
+1.	EDI 应用 ID：您的 EDI 应用程序的唯一标识符。
+2.	EDI 应用密钥：与您的 EDI 应用程序关联的密钥。
+3.	基础 API URL：API 端点的根 URL。
 
 **URL** : `/auth/local`
 
-**Method** : `POST`
+**方法** : `POST`
 
-**Auth required** : NO
+**需要认证** : 否
 
-**API call**
+**API 调用**
 
 ```
 POST {{baseUrl}}/auth/local
 Content-Type: application/json
 ```
 
-**curl example\***
+**curl 示例**
 
 ```bash
 curl -X POST {{baseUrl}}/auth/local \
@@ -38,7 +37,7 @@ curl -X POST {{baseUrl}}/auth/local \
 }'
 ```
 
-**Data constraints**
+**数据约束**
 
 ```json
 {
@@ -48,7 +47,7 @@ curl -X POST {{baseUrl}}/auth/local \
 }
 ```
 
-**Data example**
+**数据示例**
 
 ```json
 {
@@ -58,11 +57,11 @@ curl -X POST {{baseUrl}}/auth/local \
 }
 ```
 
-**Success Response**
+**成功响应**
 
-**Code** : `200 OK`
+**代码** : `200 OK`
 
-**Content example**
+**内容示例**
 
 ```json
 {
@@ -71,13 +70,13 @@ curl -X POST {{baseUrl}}/auth/local \
 }
 ```
 
-**Error Response**
+**错误响应**
 
-**Condition** : If 'identifier' and 'password' combination is wrong.
+**条件** : 如果 'identifier' 和 'password' 组合错误。
 
-**Code** : `400 BAD REQUEST`
+**代码** : `400 BAD REQUEST`
 
-**Content** :
+**内容** :
 
 ```json
 {
@@ -106,17 +105,17 @@ curl -X POST {{baseUrl}}/auth/local \
 }
 ```
 
-### Health API
+### 健康检查 API
 
-Check the health status
+检查健康状态
 
 **URL** : `/v1/health`
 
-**Method** : `GET`
+**方法** : `GET`
 
-**Auth required** : YES
+**需要认证** : 是
 
-**API call**
+**API 调用**
 
 ```
 GET {{baseUrl}}/v1/health
@@ -124,7 +123,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 ```
 
-**curl example**
+**curl 示例**
 
 ```bash
 curl {{baseUrl}}/auth/local \
@@ -132,11 +131,11 @@ curl {{baseUrl}}/auth/local \
 -H "Authorization: Bearer {{token}}" \
 ```
 
-**Success Response**
+**成功响应**
 
-**Code** : `200 OK`
+**代码** : `200 OK`
 
-**Content example**
+**内容示例**
 
 ```json
 {
@@ -144,17 +143,17 @@ curl {{baseUrl}}/auth/local \
 }
 ```
 
-## Contact APIs
+## 联系人 API
 
-### Get contacts list
+### 获取联系人列表
 
 **URL** : `/v1/contacts`
 
-**Method** : `GET`
+**方法** : `GET`
 
-**Auth required** : YES
+**需要认证** : 是
 
-**API call**
+**API 调用**
 
 ```
 GET {{baseUrl}}/v1/contacts
@@ -162,7 +161,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 ```
 
-**curl example**
+**curl 示例**
 
 ```bash
 curl {{baseUrl}}/v1/contacts \
@@ -170,24 +169,24 @@ curl {{baseUrl}}/v1/contacts \
 -H "Content-Type: application/json"
 ```
 
-**Query Parameters**
+**查询参数**
 
-| Parameter | Type | Description |
+| 参数 | 类型 | 描述 |
 |-----------|------|-------------|
-| _start | integer | Start index for pagination (default: 0) |
-| _limit | integer | Number of records to return (default: 25) |
-| _sort | string | Sort field (e.g., "name:asc", "created_at:desc") |
-| name_contains | string | Filter by name containing text |
-| approved | boolean | Filter by approval status |
-| disabled | boolean | Filter by disabled status |
-| types.value | string | Filter by contact type (e.g., "location") |
-| tags | string | Filter by tag names (comma separated) |
+| _start | integer | 分页起始索引（默认：0） |
+| _limit | integer | 返回记录数量（默认：25） |
+| _sort | string | 排序字段（例如："name:asc", "created_at:desc"） |
+| name_contains | string | 按名称包含文本过滤 |
+| approved | boolean | 按审批状态过滤 |
+| disabled | boolean | 按禁用状态过滤 |
+| types.value | string | 按联系人类型过滤（例如："location"） |
+| tags | string | 按标签名称过滤（逗号分隔） |
 
-**Success Response**
+**成功响应**
 
-**Code** : `200 OK`
+**代码** : `200 OK`
 
-**Content example**
+**内容示例**
 
 ```json
 {
@@ -214,15 +213,15 @@ curl {{baseUrl}}/v1/contacts \
 }
 ```
 
-### Get single contact
+### 获取单个联系人
 
 **URL** : `/v1/contacts/:id`
 
-**Method** : `GET`
+**方法** : `GET`
 
-**Auth required** : YES
+**需要认证** : 是
 
-**API call**
+**API 调用**
 
 ```
 GET {{baseUrl}}/v1/contacts/:id
@@ -230,7 +229,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 ```
 
-**curl example**
+**curl 示例**
 
 ```bash
 curl {{baseUrl}}/v1/contacts/CONTACT_001 \
@@ -238,17 +237,17 @@ curl {{baseUrl}}/v1/contacts/CONTACT_001 \
 -H "Content-Type: application/json"
 ```
 
-**URL Parameters**
+**URL 参数**
 
-| Parameter | Type | Description |
+| 参数 | 类型 | 描述 |
 |-----------|------|-------------|
-| id | string | Contact external ID (ext_id) |
+| id | string | 联系人外部 ID (ext_id) |
 
-**Success Response**
+**成功响应**
 
-**Code** : `200 OK`
+**代码** : `200 OK`
 
-**Content example**
+**内容示例**
 
 ```json
 {
@@ -270,13 +269,13 @@ curl {{baseUrl}}/v1/contacts/CONTACT_001 \
 }
 ```
 
-**Error Response**
+**错误响应**
 
-**Condition** : If contact not found.
+**条件** : 如果联系人未找到。
 
-**Code** : `200 OK`
+**代码** : `200 OK`
 
-**Content** :
+**内容** :
 
 ```json
 {
@@ -285,47 +284,47 @@ curl {{baseUrl}}/v1/contacts/CONTACT_001 \
 }
 ```
 
-#### Contact supported fields
+#### 联系人支持字段
 
-**Note**: For security reasons, only public contact information is available through the OpenAPI. Sensitive business information such as addresses, phone numbers, emails, and financial data are not exposed.
+**注意**：出于安全考虑，OpenAPI 仅提供公开的联系人信息。敏感的商业信息如地址、电话号码、电子邮件和财务数据不会暴露。
 
-**List API fields** (minimal information):
-| Field | Type | Description |
+**列表 API 字段**（最小信息）：
+| 字段 | 类型 | 描述 |
 |-------|------|-------------|
-| id | integer | Internal contact ID |
-| ext_id | string | External contact ID (unique) |
-| name | string | Contact name |
-| short_name | string | Short name |
-| country | string | Country code |
-| city | string | City |
+| id | integer | 内部联系人 ID |
+| ext_id | string | 外部联系人 ID（唯一） |
+| name | string | 联系人名称 |
+| short_name | string | 简称 |
+| country | string | 国家代码 |
+| city | string | 城市 |
 
-**Detail API fields** (extended public information):
-| Field | Type | Description |
+**详情 API 字段**（扩展公开信息）：
+| 字段 | 类型 | 描述 |
 |-------|------|-------------|
-| id | integer | Internal contact ID |
-| ext_id | string | External contact ID (unique) |
-| name | string | Contact name |
-| short_name | string | Short name |
-| local_name | string | Local language name |
-| native_name | string | Native language name |
-| country | string | Country code |
-| city | string | City |
-| state_code | string | State/province code |
-| zip_code | string | ZIP/postal code |
-| approved | boolean | Approval status |
-| disabled | boolean | Disabled status |
+| id | integer | 内部联系人 ID |
+| ext_id | string | 外部联系人 ID（唯一） |
+| name | string | 联系人名称 |
+| short_name | string | 简称 |
+| local_name | string | 本地语言名称 |
+| native_name | string | 本地语言名称 |
+| country | string | 国家代码 |
+| city | string | 城市 |
+| state_code | string | 州/省代码 |
+| zip_code | string | 邮政编码 |
+| approved | boolean | 审批状态 |
+| disabled | boolean | 禁用状态 |
 
-## Shipment APIs
+## 运单 API
 
-### Create a new shipment
+### 创建新运单
 
 **URL** : `/v1/shipments`
 
-**Method** : `POST`
+**方法** : `POST`
 
-**Auth required** : YES
+**需要认证** : 是
 
-**API call**
+**API 调用**
 
 ```
 POST {{baseUrl}}/v1/shipments
@@ -337,7 +336,7 @@ Content-Type: application/json
 }
 ```
 
-**curl example**
+**curl 示例**
 
 ```bash
 curl -X POST {{baseUrl}}/v1/shipments \
@@ -348,11 +347,11 @@ curl -X POST {{baseUrl}}/v1/shipments \
 }'
 ```
 
-**Success Response**
+**成功响应**
 
-**Code** : `200 OK`
+**代码** : `200 OK`
 
-**Content example**
+**内容示例**
 
 ```json
 {
@@ -360,15 +359,15 @@ curl -X POST {{baseUrl}}/v1/shipments \
 }
 ```
 
-**API POST body**
+**API POST 请求体**
 
-In the post body, we need the information like following.
+在 POST 请求体中，我们需要以下信息：
 
-1. MBL fields
+1. MBL 字段
 1. HBLs
-   1. HBL1 fields
+   1. HBL1 字段
       1. containers
-   1. HBL2 fields
+   1. HBL2 字段
       1. containers
 
 ```JSON
@@ -396,10 +395,10 @@ In the post body, we need the information like following.
 }
 ```
 
-1. mbl_type (see below)
-1. term (see below)
-  1. Example: CY-CY
-1. obl_type (see below)
+1. mbl_type（见下文）
+1. term（见下文）
+  1. 示例：CY-CY
+1. obl_type（见下文）
 1. mode
    1. FCL
    1. LCL
@@ -506,28 +505,28 @@ In the post body, we need the information like following.
 }
 ```
 
-#### Contact Type
+#### 联系人类型
 
-For contact type, we support the following fields
+对于联系人类型，我们支持以下字段
 
-| Field      | Value                                              |
+| 字段      | 值                                              |
 | ---------- | -------------------------------------------------- |
-| id         | 123: the id in the original system                 |
+| id         | 123：原始系统中的 ID                 |
 | name       | cosco shipping line                                |
 | short_name | cosco                                              |
 | address    | World Business Center, Xiaoshan District, Hangzhou |
 | country    | CN                                                 |
 | city       | Hangzhou                                           |
 
-#### Shipment supported fields
+#### 运单支持字段
 
-| Field                               | Value                      |
+| 字段                               | 值                      |
 | ----------------------------------- | -------------------------- |
 | type | ocean_import |
 
-#### OMBL supported fields
+#### OMBL 支持字段
 
-| Field                               | Value                      |
+| 字段                               | 值                      |
 | ----------------------------------- | -------------------------- |
 | mbl_no                              | OOLU2735700604             |
 | agent                               | contact type               |
@@ -628,9 +627,9 @@ For contact type, we support the following fields
 | chargeable_weight_unit              | NULL                       |
 | customer_booking_no                 | NULL                       |
 
-#### HBL supported fields
+#### HBL 支持字段
 
-| Field                               | Type             |
+| 字段                               | 类型             |
 | ----------------------------------- | ---------------- |
 | hbl_no                              | string           |
 | customer                            | contact type     |
@@ -728,9 +727,9 @@ For contact type, we support the following fields
 | delivery_pickup_date                | NULL             |
 | equipment_return_date               | NULL             |
 
-#### Container supported fields
+#### 集装箱支持字段
 
-| Field              | Value       |
+| 字段              | 值       |
 | ------------------ | ----------- |
 | name               | ABCD9298668 |
 | type               | HC          |
@@ -759,25 +758,25 @@ For contact type, we support the following fields
 | po_no              | NULL        |
 | commodity_info     | NULL        |
 
-### Enum types 
+### 枚举类型 
 
-#### MBL Types:
+#### MBL 类型：
 
-| Options | Explaination |
+| 选项 | 说明 |
 | :-----: | -----------: |
-|   CL    |      CO-LOAD |
-|   CS    |  Consol|
-|   DR    |  Direct             |
-|   DP    |  Direct Triangle |
-|   FW    |   Forwarding|
-|   NR    |       Normal |
-|   TP    |  Third Party |
-|   TR    |  Triangle |
-|   OT    |  Other |
+|   CL    |      拼箱 |
+|   CS    |  拼箱 |
+|   DR    |  直航             |
+|   DP    |  直航三角 |
+|   FW    |   货运代理 |
+|   NR    |       普通 |
+|   TP    |  第三方 |
+|   TR    |  三角 |
+|   OT    |  其他 |
 
-#### Term Types:
+#### 条款类型：
 
-| Options | Explaination |
+| 选项 | 说明 |
 | :-----: | -----------: |
 |  BT| BT|
 |  CFS| CFS|
@@ -789,76 +788,71 @@ For contact type, we support the following fields
 |  RAMP| RAMP |
 |  TK | TACKLE |
 
-#### OBL Types:
+#### OBL 类型：
 
-| Options | Explaination |
+| 选项 | 说明 |
 | :-----: | -----------: |
 |   ORIGINAL BILL OF LADING    |      original |
 |   telex    |  TELEX|
-|   seaway_bill    |  SEAWAY BILL           |
-|   e_bill    |  E-BILL |
+|   seaway_bill    |  海运单           |
+|   e_bill    |  电子提单 |
 
-#### Freight Payment
+#### 运费支付
 
-| Options | Explaination |
+| 选项 | 说明 |
 | :-----: | -----------: |
-|   prepaid    |      prepaid |
-|   collect |  collect |
+|   prepaid    |      预付 |
+|   collect |  到付 |
 
-#### HBL Release
+#### HBL 放货
 
-| Options | Explaination |
+| 选项 | 说明 |
 | :-----: | -----------: |
-|   original | original |
+|   original | 正本 |
 |   telex |  telex |
 
-#### Sales Type
+#### 销售类型
 
-| Options | Explaination |
+| 选项 | 说明 |
 | :-----: | -----------: |
-|   C | CO-LOAD|
-|   F |  FREE CARGO |
-|   N |  NOMI |
+|   C | 拼箱 |
+|   F |  免费货物 |
+|   N |  指定 |
 
 
-#### Cargo Type
+#### 货物类型
 
-| Options | Explaination |
+| 选项 | 说明 |
 | :-----: | -----------: |
-| AUT | AUTOMOBILE (NON-HAZ)|
-| BAT | BATTERY|
-| NOR | GENERAL CARGO|
-| DGG | HAZARDOUS|
-| REF | REFRIGERATED|
-| SPC | SPECIAL|
+| AUT | 汽车（非危险品） |
+| BAT | 电池 |
+| NOR | 普通货物 |
+| DGG | 危险品 |
+| REF | 冷藏 |
+| SPC | 特殊 |
 
 
-#### Mode 
+#### 运输模式 
 
-| Options | Explaination |
+| 选项 | 说明 |
 | :-----: | -----------: |
-| FCL | FCL |
-| LCL | LCL |
-| CONS | CONS |
-| BULK | BULK |
-| AIR | AIR |
+| FCL | 整箱 |
+| LCL | 拼箱 |
+| CONS | 拼箱 |
+| BULK | 散货 |
+| AIR | 空运 |
 
 
-#### weightUnit
+#### 重量单位
 
-| Options | Explaination |
+| 选项 | 说明 |
 | :-----: | -----------: |
-| KG | KG |
-| LB | LB |
+| KG | 公斤 |
+| LB | 磅 |
 
-#### volumeUnit
+#### 体积单位
 
-| Options | Explaination |
+| 选项 | 说明 |
 | :-----: | -----------: |
-| CBM | CBM |
-| CFT | CFT |
-
-
-
-
-
+| CBM | 立方米 |
+| CFT | 立方英尺 | 
