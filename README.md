@@ -360,6 +360,74 @@ curl -X POST {{baseUrl}}/v1/shipments \
 }
 ```
 
+### Add memo to shipment
+
+**URL** : `/v1/shipments/:id/memos`
+
+**Method** : `POST`
+
+**Auth required** : YES
+
+**API call**
+
+```
+POST {{baseUrl}}/v1/shipments/:id/memos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "subject": "Shipment delay notice",
+  "content": "Due to weather conditions, the shipment has been delayed by 2 days. New ETA is March 15th, 2024.",
+  "type": "general"
+}
+```
+
+**curl example**
+
+```bash
+curl --location '{{baseUrl}}/v1/shipments/fe9748bd-be64-4a06-92ae-609ba19f65d3/memos' \
+--header 'Authorization: Bearer {{token}}' \
+--header 'Content-Type: application/json' \
+--data '{
+  "subject": "Shipment delay notice",
+  "content": "Due to weather conditions, the shipment has been delayed by 2 days. New ETA is March 15th, 2024.",
+  "type": "general"
+}'
+```
+
+**URL Parameters**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| id | string | Shipment ID (UUID) |
+
+**Request Body**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| subject | string | Yes | Memo subject/title |
+| content | string | Yes | Memo content/body |
+| type | string | Yes | Memo type (e.g., "general", "delay", "update") |
+
+**Success Response**
+
+**Code** : `200 OK`
+
+**Content example**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 123,
+    "subject": "Shipment delay notice",
+    "content": "Due to weather conditions, the shipment has been delayed by 2 days. New ETA is March 15th, 2024.",
+    "type": "general",
+    "created_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
 **API POST body**
 
 In the post body, we need the information like following.

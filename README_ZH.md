@@ -359,6 +359,74 @@ curl -X POST {{baseUrl}}/v1/shipments \
 }
 ```
 
+### 为运单添加备注
+
+**URL** : `/v1/shipments/:id/memos`
+
+**方法** : `POST`
+
+**需要认证** : 是
+
+**API 调用**
+
+```
+POST {{baseUrl}}/v1/shipments/:id/memos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "subject": "Shipment delay notice",
+  "content": "Due to weather conditions, the shipment has been delayed by 2 days. New ETA is March 15th, 2024.",
+  "type": "general"
+}
+```
+
+**curl 示例**
+
+```bash
+curl --location '{{baseUrl}}/v1/shipments/fe9748bd-be64-4a06-92ae-609ba19f65d3/memos' \
+--header 'Authorization: Bearer {{token}}' \
+--header 'Content-Type: application/json' \
+--data '{
+  "subject": "Shipment delay notice",
+  "content": "Due to weather conditions, the shipment has been delayed by 2 days. New ETA is March 15th, 2024.",
+  "type": "general"
+}'
+```
+
+**URL 参数**
+
+| 参数 | 类型 | 描述 |
+|-----------|------|-------------|
+| id | string | 运单 ID (UUID) |
+
+**请求体**
+
+| 字段 | 类型 | 必填 | 描述 |
+|-------|------|----------|-------------|
+| subject | string | 是 | 备注主题/标题 |
+| content | string | 是 | 备注内容/正文 |
+| type | string | 是 | 备注类型（例如："general"、"delay"、"update"） |
+
+**成功响应**
+
+**代码** : `200 OK`
+
+**内容示例**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 123,
+    "subject": "Shipment delay notice",
+    "content": "Due to weather conditions, the shipment has been delayed by 2 days. New ETA is March 15th, 2024.",
+    "type": "general",
+    "created_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
 **API POST 请求体**
 
 在 POST 请求体中，我们需要以下信息：
