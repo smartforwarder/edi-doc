@@ -402,9 +402,6 @@ In the post body, we need the information like following.
 | Field                               | Value                      |
 | ----------------------------------- | -------------------------- |
 | mbl_no                              | OOLU2735700604             |
-| agent                               | contact type               |
-| carrier                             | contact type               |
-| coloader                            | contact type               |
 | mode                                | FCL                        |
 | term                                | CY-DOOR                    |
 | carrier_contract_no                 | NULL                       |
