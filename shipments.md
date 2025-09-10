@@ -451,6 +451,15 @@ In the post body, we need the information like following.
 | chargeable_weight                   | NULL                       |
 | chargeable_weight_unit              | NULL                       |
 | customer_booking_no                 | NULL                       |
+| customer                            | contact type     |
+| bill_to                             | contact type     |
+| shipper                             | contact type     |
+| consignee                           | contact type     |
+| notify                              | contact type     |
+| additional_notify                   | contact type     |
+| agent                               | contact type     |
+| trucker                             | contact type     |
+| broker                              | contact type     |
 
 #### HBL supported fields
 
@@ -494,6 +503,15 @@ In the post body, we need the information like following.
 | carrier_booking_no                  | NULL             |
 | equipment_origin                    | NULL             |
 | on_board_date                       | NULL             |
+| customer                            | contact type     |
+| bill_to                             | contact type     |
+| shipper                             | contact type     |
+| consignee                           | contact type     |
+| notify                              | contact type     |
+| additional_notify                   | contact type     |
+| agent                               | contact type     |
+| trucker                             | contact type     |
+| broker                              | contact type     |
 
 #### Container supported fields
 
@@ -616,7 +634,18 @@ In the post body, we need the information like following.
 | CBM | CBM |
 | CFT | CFT |
 
+#### Contact Type
 
+For contact type, we support the following fields
+
+| Field      | Value                                              |
+| ---------- | -------------------------------------------------- |
+| id         | 123: the id in the original system                 |
+| name       | cosco shipping line                                |
+| short_name | cosco                                              |
+| address    | World Business Center, Xiaoshan District, Hangzhou |
+| country    | CN                                                 |
+| city       | Hangzhou                                           |
 
 
 
