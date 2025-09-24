@@ -189,6 +189,94 @@ curl -X POST {{baseUrl}}/v1/shipments \
 }
 ```
 
+### Search shipments 
+
+**URL** : `/v1/shipments`
+
+**Method** : `GET`
+
+**Auth required** : YES
+
+**API call**
+
+```
+GET {{baseUrl}}/v1/shipments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+```
+
+**curl example**
+
+```bash
+curl {{baseUrl}}/v1/shipments \
+-H "Authorization: Bearer {{token}}" \
+-H "Content-Type: application/json"
+```
+
+**Query Parameters**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| _start | integer | Start index for pagination (default: 0) |
+| _limit | integer | Number of records to return (default: 25) |
+| _sort | string | Sort field (e.g., "name:asc", "created_at:desc") |
+| mbl_no_contains | string | Filter by mbl number |
+| hbls.hbl_no_contains | string | Filter by hbl number |
+| shipment_containers.name_contains | string | Filter by container number |
+
+**Success Response**
+
+**Code** : `200 OK`
+
+**Content example**
+
+```json
+{
+  "success": true,
+  "total": 1,
+  "data": [
+    {
+      "ext_id": "80b382fe-9804-41e9-8522-96abb26c3bb8",
+      "created_at": "2025-09-19T01:43:18.000Z",
+      "updated_at": "2025-09-19T18:03:01.000Z",
+      "shipment_number": "25091211",
+      "ombl": {
+        "ext_id": "3bff3379-713e-4872-997d-090eb24d6926",
+        "mbl_no": "ZIMUSNH222",
+        "operator": {},
+        "containers": []
+      },
+      "hbls": [
+        {
+          "ext_id": "15abfe6b-cda9-410c-bc5d-6ae8fef46917",
+          "hbl_no": "SSHSE250",
+          "containers": [],
+          "operator": {}
+        }
+      ],
+      "shipment_containers": [
+        {
+          "ext_id": "97555335-f078-4ff3-ad0e-ee409fa47479",
+          "name": "KSSU1056",
+          "seal_number": "A425097",
+          "weight": 8824,
+          "measure": 65.2,
+          "pieces": 724
+        },
+        {
+          "ext_id": "fc7a5332-2aa2-4e6f-bc1f-f8e334a9f2d5",
+          "name": "KSSU056",
+          "seal_number": "A42507",
+          "weight": 8824,
+          "measure": 65.2,
+          "pieces": 724
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### Add memo to shipment
 
 **URL** : `/v1/shipments/:id/memos`
