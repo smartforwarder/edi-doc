@@ -185,9 +185,14 @@ curl -X POST {{baseUrl}}/v1/shipments \
 
 ```json
 {
-  "success": true
+  success: true,
+  data: { ext_id: "fb46738c-3550-40a7-a035-89c277d1651e" }
 }
 ```
+
+* Required Fields
+   * shipment_number
+   * type
 
 ### Search shipments 
 
