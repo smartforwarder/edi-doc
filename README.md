@@ -1,7 +1,51 @@
-# EDI document
+# SmartForwarder EDI API
 
-The Login API is used to collect a Token for an EDI User. This token is required to authenticate subsequent API calls.
+Use this guide to authenticate an EDI user, create shipments, manage shipment documents, and push AR/AP data into SmartForwarder.
 
+Chinese version: [README_ZH.md](./README_ZH.md)
+
+## Quick Start
+
+1. Collect `baseUrl`, `identifier`, `password`, and `shop` from `admin@smartforwarder.co`.
+2. Call `POST /auth/local` and store the returned JWT.
+3. Call `GET /v1/health` with `Authorization: Bearer {{token}}`.
+4. Start shipment testing with the minimum `POST /v1/shipments` body shown below.
+
+> Critical for EDI shipment creation
+> - `shipment_number` must be present at the top level of the request body.
+> - `type` must also be present at the top level.
+> - For contact fields on `ombl` / `hbls`, passing a stable upstream `id` is preferred.
+> - If `id` is missing but `name` is present, the server generates a deterministic fallback source id from the normalized name.
+> - If both `id` and `name` are missing, the contact field is stored as `null`.
+
+## Endpoint Map
+
+| Area | Endpoints | Notes |
+|------|-----------|-------|
+| Auth | `POST /auth/local` | Get the JWT used by all authenticated calls |
+| Health | `GET /v1/health` | Fast token and connectivity check |
+| Contacts | `GET /v1/contacts`, `GET /v1/contacts/:id` | Use when you want explicit SmartForwarder contact IDs |
+| Shipments | `POST/GET/PUT/DELETE /v1/shipments`, `POST /v1/shipments/:id/memos` | Core EDI shipment workflow |
+| Documents | `GET/POST /v1/shipments/:id/documents`, `PUT/DELETE /v1/documents/:id` | Shipment document management |
+| Finance | `POST /v1/araps`, `GET /v1/transactions` | AR/AP creation and transaction lookup |
+
+## First Working Shipment Request
+
+Use this minimum payload first. Once it succeeds, add optional `ombl`, `hbls`, and document fields incrementally.
+
+```bash
+curl -X POST {{baseUrl}}/v1/shipments \
+-H "Authorization: Bearer {{token}}" \
+-H "Content-Type: application/json" \
+-d '{
+  "shipment_number": "SB202601309678",
+  "type": "ocean_import",
+  "ombl": {
+    "mbl_no": "CMDUCHN30458001"
+  },
+  "hbls": []
+}'
+```
 
 ## Common APIs
 
@@ -127,9 +171,9 @@ Content-Type: application/json
 **curl example**
 
 ```bash
-curl {{baseUrl}}/auth/local \
+curl {{baseUrl}}/v1/health \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer {{token}}" \
+-H "Authorization: Bearer {{token}}"
 ```
 
 **Success Response**
@@ -145,6 +189,8 @@ curl {{baseUrl}}/auth/local \
 ```
 
 ## Contact APIs
+
+> Use the contact endpoints when you want to pass explicit SmartForwarder contact IDs in shipment payloads. If you omit `id` but keep a consistent contact `name`, the EDI shipment flow can still derive a stable fallback mapping.
 
 ### Get contacts list
 
@@ -317,7 +363,28 @@ curl {{baseUrl}}/v1/contacts/CONTACT_001 \
 
 ## Shipment APIs
 
+### Shipment and document endpoint summary
+
+The following authenticated endpoints are currently available in addition to the detailed examples below:
+
+| Method | URL | Description |
+|--------|-----|-------------|
+| `POST` | `/v1/shipments` | Create a shipment |
+| `GET` | `/v1/shipments` | Search shipments |
+| `GET` | `/v1/shipments/:id` | Get a shipment by `ext_id` |
+| `PUT` | `/v1/shipments/:id` | Update a shipment |
+| `DELETE` | `/v1/shipments/:id` | Delete a shipment |
+| `POST` | `/v1/shipments/:id/memos` | Add a shipment memo |
+| `POST` | `/v1/araps` | Create AR/AP records |
+| `GET` | `/v1/shipments/:id/documents` | List shipment documents |
+| `POST` | `/v1/shipments/:id/documents` | Add shipment documents |
+| `PUT` | `/v1/documents/:id` | Update a document |
+| `DELETE` | `/v1/documents/:id` | Delete a document |
+| `GET` | `/v1/transactions` | List transactions |
+
 ### Create a new shipment
+
+Start with the minimum working body below. After this request succeeds, add master bill fields, house bills, contacts, containers, and documents step by step.
 
 **URL** : `/v1/shipments`
 
@@ -333,7 +400,12 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "field": "value"
+  "shipment_number": "SB202601309678",
+  "type": "ocean_import",
+  "ombl": {
+    "mbl_no": "CMDUCHN30458001"
+  },
+  "hbls": []
 }
 ```
 
@@ -344,9 +416,25 @@ curl -X POST {{baseUrl}}/v1/shipments \
 -H "Authorization: Bearer {{token}}" \
 -H "Content-Type: application/json" \
 -d '{
-  "field": "value"
+  "shipment_number": "SB202601309678",
+  "type": "ocean_import",
+  "ombl": {
+    "mbl_no": "CMDUCHN30458001"
+  },
+  "hbls": []
 }'
 ```
+
+**Rules that are easy to miss**
+
+| Rule | Why it matters |
+|------|----------------|
+| `shipment_number` must be top-level | EDI shipment identity and `original_code` generation use the top-level field |
+| Do not place `shipment_number` only inside `ombl` or `hbls` | Nested values are not used as the source shipment number |
+| `type` must be top-level | The create flow expects it at the request root |
+| Contact `id` is preferred | Existing IDs keep contact mapping explicit and stable |
+| Missing contact `id` falls back to `name` | The server derives a deterministic source id from the normalized contact name |
+| Missing contact `id` and `name` becomes `null` | The contact will not be mapped or retained |
 
 **Success Response**
 
@@ -356,7 +444,10 @@ curl -X POST {{baseUrl}}/v1/shipments \
 
 ```json
 {
-  "success": true
+  "success": true,
+  "data": {
+    "ext_id": "0f7f9c4e-6e76-4f0c-a5d4-2a7f77ab1234"
+  }
 }
 ```
 
@@ -428,18 +519,15 @@ curl --location '{{baseUrl}}/v1/shipments/fe9748bd-be64-4a06-92ae-609ba19f65d3/m
 }
 ```
 
-**API POST body**
+**Request structure**
 
-In the post body, we need the information like following.
+Build the payload in three layers:
 
-1. MBL fields
-1. HBLs
-   1. HBL1 fields
-      1. containers
-   1. HBL2 fields
-      1. containers
+- Top level: `shipment_number`, `type`, `ombl`, `hbls`
+- `ombl`: master bill fields and master-level contacts
+- `hbls[]`: one or more house bills; each HBL can carry its own contacts and `containers`
 
-```JSON
+```json
 {
   "mbl_field1": "value1",
   "mbl_field2": "value2",
@@ -464,33 +552,29 @@ In the post body, we need the information like following.
 }
 ```
 
-1. mbl_type (see below)
-1. term (see below)
-  1. Example: CY-CY
-1. obl_type (see below)
-1. mode
-   1. FCL
-   1. LCL
-   1. CONS
-   1. BULK
-   1. AIR
-1. weightUnit
-   1. KG
-   1. LB
-1. volumeUnit
-   1. CBM
-   1. CFT
-1. type
-   1. ocean_import
-   1. ocean_export
-   1. air_import
-   1. air_export
+**Field groups to validate before go-live**
 
+- `mbl_type`: see enum values below
+- `term`: for example `CY-CY`
+- `obl_type`: see enum values below
+- `mode`: `FCL`, `LCL`, `CONS`, `BULK`, `AIR`
+- `weightUnit`: `KG`, `LB`
+- `volumeUnit`: `CBM`, `CFT`
+- `type`: `ocean_import`, `ocean_export`, `air_import`, `air_export`
 
+**Important contact note for EDI users**
 
+- Contact-type fields such as `shipper`, `consignee`, `notify`, `customer`, `bill_to`, `carrier`, and similar fields on `ombl` / `hbls` should preferably provide a stable upstream `id`.
+- If `id` is omitted but `name` is present, the server generates a deterministic fallback source id from the normalized contact name.
+- If both `id` and `name` are missing, the contact field is stored as `null`.
+- `agent` is handled separately by the authenticated EDI user's linked contact.
+- Passing an explicit upstream contact `id` is still recommended when available, but for your current integration a consistent full contact name is enough to keep the mapping stable.
 
-```JSON
+**Full shipment example**
+
+```json
 {
+  "shipment_number": "SB202601309678",
   "ombl": {
     "carrier_booking_no": "CARRIER_BOOKING_NUMBER",
     "weightUnit": "KG",
@@ -576,7 +660,7 @@ In the post body, we need the information like following.
 
 #### Contact Type
 
-For contact type, we support the following fields
+For explicit contact objects, we support the following fields. For EDI users, if `id` is omitted but `name` is present, shipment creation derives a stable fallback source id from the normalized name.
 
 | Field      | Value                                              |
 | ---------- | -------------------------------------------------- |
@@ -591,6 +675,7 @@ For contact type, we support the following fields
 
 | Field                               | Value                      |
 | ----------------------------------- | -------------------------- |
+| shipment_number | top-level only, e.g. SB202601309678 |
 | type | ocean_import |
 
 #### OMBL supported fields
@@ -831,7 +916,7 @@ For contact type, we support the following fields
 
 #### MBL Types:
 
-| Options | Explaination |
+| Options | Explanation |
 | :-----: | -----------: |
 |   CL    |      CO-LOAD |
 |   CS    |  Consol|
@@ -845,7 +930,7 @@ For contact type, we support the following fields
 
 #### Term Types:
 
-| Options | Explaination |
+| Options | Explanation |
 | :-----: | -----------: |
 |  BT| BT|
 |  CFS| CFS|
@@ -859,7 +944,7 @@ For contact type, we support the following fields
 
 #### OBL Types:
 
-| Options | Explaination |
+| Options | Explanation |
 | :-----: | -----------: |
 |   ORIGINAL BILL OF LADING    |      original |
 |   telex    |  TELEX|
@@ -868,21 +953,21 @@ For contact type, we support the following fields
 
 #### Freight Payment
 
-| Options | Explaination |
+| Options | Explanation |
 | :-----: | -----------: |
 |   prepaid    |      prepaid |
 |   collect |  collect |
 
 #### HBL Release
 
-| Options | Explaination |
+| Options | Explanation |
 | :-----: | -----------: |
 |   original | original |
 |   telex |  telex |
 
 #### Sales Type
 
-| Options | Explaination |
+| Options | Explanation |
 | :-----: | -----------: |
 |   C | CO-LOAD|
 |   F |  FREE CARGO |
@@ -891,7 +976,7 @@ For contact type, we support the following fields
 
 #### Cargo Type
 
-| Options | Explaination |
+| Options | Explanation |
 | :-----: | -----------: |
 | AUT | AUTOMOBILE (NON-HAZ)|
 | BAT | BATTERY|
@@ -903,7 +988,7 @@ For contact type, we support the following fields
 
 #### Mode 
 
-| Options | Explaination |
+| Options | Explanation |
 | :-----: | -----------: |
 | FCL | FCL |
 | LCL | LCL |
@@ -914,19 +999,14 @@ For contact type, we support the following fields
 
 #### weightUnit
 
-| Options | Explaination |
+| Options | Explanation |
 | :-----: | -----------: |
 | KG | KG |
 | LB | LB |
 
 #### volumeUnit
 
-| Options | Explaination |
+| Options | Explanation |
 | :-----: | -----------: |
 | CBM | CBM |
 | CFT | CFT |
-
-
-
-
-

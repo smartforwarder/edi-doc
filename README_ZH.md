@@ -1,6 +1,51 @@
-# EDI 文档
+# SmartForwarder EDI API 文档
 
-登录 API 用于获取 EDI 用户的令牌。此令牌是后续 API 调用进行身份验证所必需的。
+这份文档用于说明如何让 EDI 用户完成登录认证、创建运单、管理运单单据，以及推送应收应付数据到 SmartForwarder。
+
+英文版：[README.md](./README.md)
+
+## 快速开始
+
+1. 先向 `admin@smartforwarder.co` 获取 `baseUrl`、`identifier`、`password` 和 `shop`。
+2. 调用 `POST /auth/local`，保存返回的 JWT。
+3. 使用 `Authorization: Bearer {{token}}` 调用 `GET /v1/health`，确认认证和连通性正常。
+4. 先用下面的最小 `POST /v1/shipments` 请求打通链路，再逐步补充更多字段。
+
+> EDI 运单创建最容易踩坑的规则
+> - `shipment_number` 必须出现在请求体最外层。
+> - `type` 也必须出现在请求体最外层。
+> - `ombl` / `hbls` 上的 contact 字段，最佳实践仍然是传稳定的上游 `id`。
+> - 如果没有 `id` 但有 `name`，服务端会基于规范化后的名称生成稳定的 fallback source id。
+> - 如果 `id` 和 `name` 都没有，该 contact 字段会被保存为 `null`。
+
+## 接口总览
+
+| 模块 | 接口 | 说明 |
+|------|------|------|
+| 认证 | `POST /auth/local` | 获取后续接口使用的 JWT |
+| 健康检查 | `GET /v1/health` | 快速确认 token 和网络都正常 |
+| 联系人 | `GET /v1/contacts`、`GET /v1/contacts/:id` | 需要显式传 SmartForwarder 联系人 ID 时使用 |
+| 运单 | `POST/GET/PUT/DELETE /v1/shipments`、`POST /v1/shipments/:id/memos` | EDI 运单主流程 |
+| 单据 | `GET/POST /v1/shipments/:id/documents`、`PUT/DELETE /v1/documents/:id` | 运单附件管理 |
+| 财务 | `POST /v1/araps`、`GET /v1/transactions` | 创建应收应付和查询交易 |
+
+## 第一条可用的运单请求
+
+建议先用这个最小请求体完成联调，确认成功后再逐步加入 `ombl`、`hbls`、单据等可选字段。
+
+```bash
+curl -X POST {{baseUrl}}/v1/shipments \
+-H "Authorization: Bearer {{token}}" \
+-H "Content-Type: application/json" \
+-d '{
+  "shipment_number": "SB202601309678",
+  "type": "ocean_import",
+  "ombl": {
+    "mbl_no": "CMDUCHN30458001"
+  },
+  "hbls": []
+}'
+```
 
 ## 通用 API
 
@@ -126,9 +171,9 @@ Content-Type: application/json
 **curl 示例**
 
 ```bash
-curl {{baseUrl}}/auth/local \
+curl {{baseUrl}}/v1/health \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer {{token}}" \
+-H "Authorization: Bearer {{token}}"
 ```
 
 **成功响应**
@@ -144,6 +189,8 @@ curl {{baseUrl}}/auth/local \
 ```
 
 ## 联系人 API
+
+> 如果你希望在运单请求里显式传 SmartForwarder 的 contact ID，请先调用联系人接口。对于 EDI 运单创建，如果没有 `id` 但联系人 `name` 保持一致，系统仍然可以做稳定映射。
 
 ### 获取联系人列表
 
@@ -316,7 +363,28 @@ curl {{baseUrl}}/v1/contacts/CONTACT_001 \
 
 ## 运单 API
 
+### 运单与单据接口总览
+
+除下面的详细示例外，目前还开放了以下需要认证的接口：
+
+| 方法 | URL | 说明 |
+|------|-----|------|
+| `POST` | `/v1/shipments` | 创建运单 |
+| `GET` | `/v1/shipments` | 查询运单 |
+| `GET` | `/v1/shipments/:id` | 按 `ext_id` 获取单票运单 |
+| `PUT` | `/v1/shipments/:id` | 更新运单 |
+| `DELETE` | `/v1/shipments/:id` | 删除运单 |
+| `POST` | `/v1/shipments/:id/memos` | 为运单添加备注 |
+| `POST` | `/v1/araps` | 创建应收应付记录 |
+| `GET` | `/v1/shipments/:id/documents` | 获取运单单据列表 |
+| `POST` | `/v1/shipments/:id/documents` | 新增运单单据 |
+| `PUT` | `/v1/documents/:id` | 更新单据 |
+| `DELETE` | `/v1/documents/:id` | 删除单据 |
+| `GET` | `/v1/transactions` | 获取交易列表 |
+
 ### 创建新运单
+
+建议先用下面这个最小可用请求体打通流程，确认成功后再逐步增加主单、分单、联系人、箱信息和单据字段。
 
 **URL** : `/v1/shipments`
 
@@ -332,7 +400,12 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "field": "value"
+  "shipment_number": "SB202601309678",
+  "type": "ocean_import",
+  "ombl": {
+    "mbl_no": "CMDUCHN30458001"
+  },
+  "hbls": []
 }
 ```
 
@@ -343,9 +416,25 @@ curl -X POST {{baseUrl}}/v1/shipments \
 -H "Authorization: Bearer {{token}}" \
 -H "Content-Type: application/json" \
 -d '{
-  "field": "value"
+  "shipment_number": "SB202601309678",
+  "type": "ocean_import",
+  "ombl": {
+    "mbl_no": "CMDUCHN30458001"
+  },
+  "hbls": []
 }'
 ```
+
+**最容易忽略的规则**
+
+| 规则 | 原因 |
+|------|------|
+| `shipment_number` 必须在最外层 | EDI 运单身份识别和 `original_code` 生成依赖最外层字段 |
+| 不要只把 `shipment_number` 放在 `ombl` 或 `hbls` 里 | 嵌套字段不会被当成主运单号来源 |
+| `type` 必须在最外层 | 创建流程按根级字段读取类型 |
+| contact 最好显式传 `id` | 这样映射最明确，也最稳定 |
+| 缺少 contact `id` 时会回退到 `name` | 服务端会基于规范化后的联系人名称生成稳定 source id |
+| `id` 和 `name` 都没有时会变成 `null` | 该联系人不会被映射，也不会保留 |
 
 **成功响应**
 
@@ -355,7 +444,10 @@ curl -X POST {{baseUrl}}/v1/shipments \
 
 ```json
 {
-  "success": true
+  "success": true,
+  "data": {
+    "ext_id": "0f7f9c4e-6e76-4f0c-a5d4-2a7f77ab1234"
+  }
 }
 ```
 
@@ -427,18 +519,15 @@ curl --location '{{baseUrl}}/v1/shipments/fe9748bd-be64-4a06-92ae-609ba19f65d3/m
 }
 ```
 
-**API POST 请求体**
+**请求结构**
 
-在 POST 请求体中，我们需要以下信息：
+整个请求体可以按三层理解：
 
-1. MBL 字段
-1. HBLs
-   1. HBL1 字段
-      1. containers
-   1. HBL2 字段
-      1. containers
+- 最外层：`shipment_number`、`type`、`ombl`、`hbls`
+- `ombl`：主单字段和主单级联系人
+- `hbls[]`：一个或多个分单，每个 HBL 都可以有自己的联系人和 `containers`
 
-```JSON
+```json
 {
   "mbl_field1": "value1",
   "mbl_field2": "value2",
@@ -463,33 +552,29 @@ curl --location '{{baseUrl}}/v1/shipments/fe9748bd-be64-4a06-92ae-609ba19f65d3/m
 }
 ```
 
-1. mbl_type（见下文）
-1. term（见下文）
-  1. 示例：CY-CY
-1. obl_type（见下文）
-1. mode
-   1. FCL
-   1. LCL
-   1. CONS
-   1. BULK
-   1. AIR
-1. weightUnit
-   1. KG
-   1. LB
-1. volumeUnit
-   1. CBM
-   1. CFT
-1. type
-   1. ocean_import
-   1. ocean_export
-   1. air_import
-   1. air_export
+**上线前建议先核对的字段组**
 
+- `mbl_type`：见下方枚举
+- `term`：例如 `CY-CY`
+- `obl_type`：见下方枚举
+- `mode`：`FCL`、`LCL`、`CONS`、`BULK`、`AIR`
+- `weightUnit`：`KG`、`LB`
+- `volumeUnit`：`CBM`、`CFT`
+- `type`：`ocean_import`、`ocean_export`、`air_import`、`air_export`
 
+**EDI 用户联系人字段说明**
 
+- `ombl` / `hbls` 上的 `shipper`、`consignee`、`notify`、`customer`、`bill_to`、`carrier` 等 contact 类型字段，最佳实践仍然是传你们上游系统里稳定的 `id`。
+- 如果没有传 `id`，但传了 `name`，服务端会基于规范化后的联系人名称生成稳定的 fallback source id。
+- 如果 `id` 和 `name` 都没有，该字段最终会被保存为 `null`。
+- `agent` 属于特例，会使用当前 EDI 用户绑定的联系人。
+- 对你们当前接入场景来说，只要联系人全称保持一致，就可以稳定映射；如果上游已经有稳定 `id`，仍然建议显式传入。
 
-```JSON
+**完整运单示例**
+
+```json
 {
+  "shipment_number": "SB202601309678",
   "ombl": {
     "carrier_booking_no": "CARRIER_BOOKING_NUMBER",
     "weightUnit": "KG",
@@ -575,7 +660,7 @@ curl --location '{{baseUrl}}/v1/shipments/fe9748bd-be64-4a06-92ae-609ba19f65d3/m
 
 #### 联系人类型
 
-对于联系人类型，我们支持以下字段
+如果你传的是显式 contact 对象，可以使用以下字段。对于 EDI 用户，如果缺少 `id` 但有 `name`，系统会基于规范化后的名称生成稳定的 fallback source id。
 
 | 字段      | 值                                              |
 | ---------- | -------------------------------------------------- |
@@ -590,6 +675,7 @@ curl --location '{{baseUrl}}/v1/shipments/fe9748bd-be64-4a06-92ae-609ba19f65d3/m
 
 | 字段                               | 值                      |
 | ----------------------------------- | -------------------------- |
+| shipment_number | 仅支持最外层，例如 SB202601309678 |
 | type | ocean_import |
 
 #### OMBL 支持字段
