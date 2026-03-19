@@ -451,6 +451,78 @@ curl -X POST {{baseUrl}}/v1/shipments \
 }
 ```
 
+### 查询运单
+
+支持分页和可选过滤条件的运单查询。可按 MBL 号、HBL 号或箱号进行检索。
+
+**URL** : `/v1/shipments`
+
+**方法** : `GET`
+
+**需要认证** : 是
+
+**API 调用**
+
+```
+GET {{baseUrl}}/v1/shipments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+```
+
+**curl 示例**
+
+```bash
+# 按 MBL 号查询
+curl "${baseUrl}/v1/shipments?mbl_no_contains=ZIM&_limit=10" \
+  -H "Authorization: Bearer ${token}" \
+  -H "Content-Type: application/json"
+
+# 按 HBL 号查询
+curl "${baseUrl}/v1/shipments?hbls.hbl_no_contains=SSH&_limit=10" \
+  -H "Authorization: Bearer ${token}" \
+  -H "Content-Type: application/json"
+
+# 按箱号查询
+curl "${baseUrl}/v1/shipments?shipment_containers.name_contains=MATU&_limit=10" \
+  -H "Authorization: Bearer ${token}" \
+  -H "Content-Type: application/json"
+```
+
+**查询参数**
+
+| 参数 | 类型 | 描述 |
+|-----------|------|-------------|
+| _start | integer | 分页起始索引（默认：0） |
+| _limit | integer | 返回记录数量（默认：25） |
+| _sort | string | 排序字段（例如："created_at:desc"） |
+| mbl_no_contains | string | 按 MBL 号过滤（模糊匹配） |
+| hbls.hbl_no_contains | string | 按 HBL 号过滤（模糊匹配） |
+| shipment_containers.name_contains | string | 按箱号过滤（模糊匹配） |
+
+**成功响应**
+
+**代码** : `200 OK`
+
+**内容示例**
+
+```json
+{
+  "success": true,
+  "total": 6,
+  "data": [
+    {
+      "ext_id": "80b382fe-9804-41e9-8522-96abb26c3bb8",
+      "shipment_number": "25091211",
+      "ombl": { "ext_id": "...", "mbl_no": "ZIMUSNH222" },
+      "hbls": [{ "ext_id": "...", "hbl_no": "SSHSE250" }],
+      "shipment_containers": [{ "name": "KSSU1056", "seal_number": "A425097" }]
+    }
+  ]
+}
+```
+
+> 更多运单查询说明见 [shipments.md](./shipments.md)。
+
 ### 为运单添加备注
 
 **URL** : `/v1/shipments/:id/memos`

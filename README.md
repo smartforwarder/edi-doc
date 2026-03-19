@@ -451,6 +451,78 @@ curl -X POST {{baseUrl}}/v1/shipments \
 }
 ```
 
+### Search shipments
+
+Search shipments with pagination and optional filters. You can query by MBL number, HBL number, or container number.
+
+**URL** : `/v1/shipments`
+
+**Method** : `GET`
+
+**Auth required** : YES
+
+**API call**
+
+```
+GET {{baseUrl}}/v1/shipments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+```
+
+**curl example**
+
+```bash
+# Search by MBL number
+curl "${baseUrl}/v1/shipments?mbl_no_contains=ZIM&_limit=10" \
+  -H "Authorization: Bearer ${token}" \
+  -H "Content-Type: application/json"
+
+# Search by HBL number
+curl "${baseUrl}/v1/shipments?hbls.hbl_no_contains=SSH&_limit=10" \
+  -H "Authorization: Bearer ${token}" \
+  -H "Content-Type: application/json"
+
+# Search by container number
+curl "${baseUrl}/v1/shipments?shipment_containers.name_contains=MATU&_limit=10" \
+  -H "Authorization: Bearer ${token}" \
+  -H "Content-Type: application/json"
+```
+
+**Query Parameters**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| _start | integer | Start index for pagination (default: 0) |
+| _limit | integer | Number of records to return (default: 25) |
+| _sort | string | Sort field (e.g., "created_at:desc") |
+| mbl_no_contains | string | Filter by MBL number (partial match) |
+| hbls.hbl_no_contains | string | Filter by HBL number (partial match) |
+| shipment_containers.name_contains | string | Filter by container number (partial match) |
+
+**Success Response**
+
+**Code** : `200 OK`
+
+**Content example**
+
+```json
+{
+  "success": true,
+  "total": 6,
+  "data": [
+    {
+      "ext_id": "80b382fe-9804-41e9-8522-96abb26c3bb8",
+      "shipment_number": "25091211",
+      "ombl": { "ext_id": "...", "mbl_no": "ZIMUSNH222" },
+      "hbls": [{ "ext_id": "...", "hbl_no": "SSHSE250" }],
+      "shipment_containers": [{ "name": "KSSU1056", "seal_number": "A425097" }]
+    }
+  ]
+}
+```
+
+> For more shipment search details, see [shipments.md](./shipments.md).
+
 ### Add memo to shipment
 
 **URL** : `/v1/shipments/:id/memos`
