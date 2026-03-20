@@ -203,7 +203,7 @@ curl {{baseUrl}}/v1/health \
 **API call**
 
 ```
-GET {{baseUrl}}/v1/contacts
+GET {{baseUrl}}/v1/contacts?name_contains=ABC
 Authorization: Bearer {{token}}
 Content-Type: application/json
 ```
@@ -211,23 +211,23 @@ Content-Type: application/json
 **curl example**
 
 ```bash
-curl {{baseUrl}}/v1/contacts \
+curl "{{baseUrl}}/v1/contacts?name_contains=ABC" \
 -H "Authorization: Bearer {{token}}" \
 -H "Content-Type: application/json"
 ```
 
 **Query Parameters**
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| _start | integer | Start index for pagination (default: 0) |
-| _limit | integer | Number of records to return (default: 25) |
-| _sort | string | Sort field (e.g., "name:asc", "created_at:desc") |
-| name_contains | string | Filter by name containing text |
-| approved | boolean | Filter by approval status |
-| disabled | boolean | Filter by disabled status |
-| types.value | string | Filter by contact type (e.g., "location") |
-| tags | string | Filter by tag names (comma separated) |
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| name_contains | string | **YES** | Filter by name containing text. At least 3 characters required. |
+| _start | integer | no | Start index for pagination (default: 0) |
+| _limit | integer | no | Number of records to return (default: 25) |
+| _sort | string | no | Sort field (e.g., "name:asc", "created_at:desc") |
+| types.value | string | no | Filter by contact type (e.g., "location") |
+| tags | string | no | Filter by tag names (comma separated) |
+
+> **Note:** Calling `/v1/contacts` without `name_contains` returns `400 Bad Request`. Only approved contacts are returned.
 
 **Success Response**
 
@@ -309,9 +309,7 @@ curl {{baseUrl}}/v1/contacts/CONTACT_001 \
     "country": "US",
     "city": "New York",
     "state_code": "NY",
-    "zip_code": "10001",
-    "approved": true,
-    "disabled": false
+    "zip_code": "10001"
   }
 }
 ```
@@ -358,8 +356,6 @@ curl {{baseUrl}}/v1/contacts/CONTACT_001 \
 | city | string | City |
 | state_code | string | State/province code |
 | zip_code | string | ZIP/postal code |
-| approved | boolean | Approval status |
-| disabled | boolean | Disabled status |
 
 ## Shipment APIs
 

@@ -203,7 +203,7 @@ curl {{baseUrl}}/v1/health \
 **API 调用**
 
 ```
-GET {{baseUrl}}/v1/contacts
+GET {{baseUrl}}/v1/contacts?name_contains=ABC
 Authorization: Bearer {{token}}
 Content-Type: application/json
 ```
@@ -211,23 +211,23 @@ Content-Type: application/json
 **curl 示例**
 
 ```bash
-curl {{baseUrl}}/v1/contacts \
+curl "{{baseUrl}}/v1/contacts?name_contains=ABC" \
 -H "Authorization: Bearer {{token}}" \
 -H "Content-Type: application/json"
 ```
 
 **查询参数**
 
-| 参数 | 类型 | 描述 |
-|-----------|------|-------------|
-| _start | integer | 分页起始索引（默认：0） |
-| _limit | integer | 返回记录数量（默认：25） |
-| _sort | string | 排序字段（例如："name:asc", "created_at:desc"） |
-| name_contains | string | 按名称包含文本过滤 |
-| approved | boolean | 按审批状态过滤 |
-| disabled | boolean | 按禁用状态过滤 |
-| types.value | string | 按联系人类型过滤（例如："location"） |
-| tags | string | 按标签名称过滤（逗号分隔） |
+| 参数 | 类型 | 必填 | 描述 |
+|-----------|------|------|-------------|
+| name_contains | string | **是** | 按名称包含文本过滤，至少传 3 个字符 |
+| _start | integer | 否 | 分页起始索引（默认：0） |
+| _limit | integer | 否 | 返回记录数量（默认：25） |
+| _sort | string | 否 | 排序字段（例如："name:asc", "created_at:desc"） |
+| types.value | string | 否 | 按联系人类型过滤（例如："location"） |
+| tags | string | 否 | 按标签名称过滤（逗号分隔） |
+
+> **注意：** 调用 `/v1/contacts` 时不传 `name_contains` 会返回 `400 Bad Request`。默认只返回已审批（approved）的联系人。
 
 **成功响应**
 
@@ -309,9 +309,7 @@ curl {{baseUrl}}/v1/contacts/CONTACT_001 \
     "country": "US",
     "city": "New York",
     "state_code": "NY",
-    "zip_code": "10001",
-    "approved": true,
-    "disabled": false
+    "zip_code": "10001"
   }
 }
 ```
@@ -358,8 +356,6 @@ curl {{baseUrl}}/v1/contacts/CONTACT_001 \
 | city | string | 城市 |
 | state_code | string | 州/省代码 |
 | zip_code | string | 邮政编码 |
-| approved | boolean | 审批状态 |
-| disabled | boolean | 禁用状态 |
 
 ## 运单 API
 
