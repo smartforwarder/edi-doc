@@ -637,6 +637,7 @@ curl --location '{{baseUrl}}/v1/shipments/fe9748bd-be64-4a06-92ae-609ba19f65d3/m
 - 如果 `id` 和 `name` 都没有，该字段最终会被保存为 `null`。
 - `agent` 属于特例，会使用当前 EDI 用户绑定的联系人。
 - 对你们当前接入场景来说，只要联系人全称保持一致，就可以稳定映射；如果上游已经有稳定 `id`，仍然建议显式传入。
+- **直接使用 SmartForwarder 联系人 ID**：如果你已经知道 SmartForwarder 内部的联系人 ID（例如通过 `GET /v1/contacts` 查询得到），可以传 `{ "id": 123, "sf_internal": true }` 来跳过联系人映射，系统会直接使用该 ID。
 
 **完整运单示例**
 
@@ -738,6 +739,7 @@ curl --location '{{baseUrl}}/v1/shipments/fe9748bd-be64-4a06-92ae-609ba19f65d3/m
 | address    | World Business Center, Xiaoshan District, Hangzhou |
 | country    | CN                                                 |
 | city       | Hangzhou                                           |
+| sf_internal | true：设置此标识后，`id` 将被视为 SmartForwarder 内部联系人 ID，跳过联系人映射。可通过 `GET /v1/contacts` 获取该 ID。 |
 
 #### 运单支持字段
 

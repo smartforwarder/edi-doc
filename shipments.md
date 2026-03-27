@@ -485,6 +485,7 @@ Build the payload in three layers:
 - If both `id` and `name` are missing, the contact field is stored as `null`.
 - `agent` is handled separately by the authenticated EDI user's linked contact.
 - Passing an explicit upstream contact `id` is still recommended when available, but for your current integration a consistent full contact name is enough to keep the mapping stable.
+- **Direct SmartForwarder contact ID**: If you already know the SmartForwarder internal contact ID (e.g. from `GET /v1/contacts`), you can pass `{ "id": 123, "sf_internal": true }` to skip the contact mapping entirely. The ID will be used as-is.
 
 **Full shipment example**
 
@@ -817,3 +818,4 @@ For explicit contact objects, we support the following fields. For EDI users, if
 | address    | World Business Center, Xiaoshan District, Hangzhou |
 | country    | CN                                                 |
 | city       | Hangzhou                                           |
+| sf_internal | true: set this flag to use `id` as a SmartForwarder internal contact ID directly, skipping contact mapping. Get the ID from `GET /v1/contacts`. |
