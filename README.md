@@ -368,7 +368,7 @@ The following authenticated endpoints are currently available in addition to the
 | `POST` | `/v1/shipments` | Create a shipment |
 | `GET` | `/v1/shipments` | Search shipments |
 | `GET` | `/v1/shipments/:id` | Get a shipment by `ext_id` |
-| `PUT` | `/v1/shipments/:id` | Update a shipment |
+| `PUT` | `/v1/shipments/:id` | Update a shipment's operator / co-operators |
 | `DELETE` | `/v1/shipments/:id` | Delete a shipment |
 | `POST` | `/v1/shipments/:id/memos` | Add a shipment memo |
 | `POST` | `/v1/araps` | Create AR/AP records |
@@ -446,6 +446,74 @@ curl -X POST {{baseUrl}}/v1/shipments \
   }
 }
 ```
+
+### Update a shipment
+
+Update the **operator (OP)** and **co-operators** of an existing shipment. Only these two fields are updatable through this endpoint — any other field in the body is ignored (this is not a general shipment update).
+
+**URL** : `/v1/shipments/:id`  — `:id` is the shipment `ext_id` returned when the shipment was created.
+
+**Method** : `PUT`
+
+**Auth required** : YES
+
+**API call**
+
+```
+PUT {{baseUrl}}/v1/shipments/0f7f9c4e-6e76-4f0c-a5d4-2a7f77ab1234
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "operator": "jsmith",
+  "co_operators": ["alice", "bob"]
+}
+```
+
+**curl example**
+
+```bash
+curl -X PUT {{baseUrl}}/v1/shipments/0f7f9c4e-6e76-4f0c-a5d4-2a7f77ab1234 \
+-H "Authorization: Bearer {{token}}" \
+-H "Content-Type: application/json" \
+-d '{
+  "operator": "jsmith",
+  "co_operators": ["alice", "bob"]
+}'
+```
+
+**Body fields**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| operator | string \| object \| null | The OP username. Pass a username string, or `{ "username": "...", "name": "...", "email": "..." }`. Pass `null` to clear the operator. |
+| co_operators | string[] | Array of co-operator usernames (or `{ "username": "..." }` objects). Pass `[]` to clear all co-operators. |
+
+**Rules that are easy to miss**
+
+| Rule | Why it matters |
+|------|----------------|
+| `:id` is the `ext_id` | Use the `ext_id` from create, not an internal id |
+| Only `operator` / `co_operators` are applied | Any other field in the body is ignored |
+| An omitted field is left unchanged | Only the fields you include are updated; send `operator: null` / `co_operators: []` to clear |
+| Users are matched by `username` | An existing user is matched by username. An unknown username is created only if you also pass `name` and `email`; a bare unknown username returns `400` |
+
+**Success Response**
+
+**Code** : `200 OK`
+
+```json
+{
+  "success": true
+}
+```
+
+**Error responses**
+
+| Code | When |
+|------|------|
+| `400` | No updatable field provided, `co_operators` is not an array, or a username cannot be resolved/created |
+| `404` | No shipment matches the given `ext_id` |
 
 ### Search shipments
 

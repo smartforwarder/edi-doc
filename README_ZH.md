@@ -368,7 +368,7 @@ curl {{baseUrl}}/v1/contacts/CONTACT_001 \
 | `POST` | `/v1/shipments` | 创建运单 |
 | `GET` | `/v1/shipments` | 查询运单 |
 | `GET` | `/v1/shipments/:id` | 按 `ext_id` 获取单票运单 |
-| `PUT` | `/v1/shipments/:id` | 更新运单 |
+| `PUT` | `/v1/shipments/:id` | 更新运单的 operator / co-operators |
 | `DELETE` | `/v1/shipments/:id` | 删除运单 |
 | `POST` | `/v1/shipments/:id/memos` | 为运单添加备注 |
 | `POST` | `/v1/araps` | 创建应收应付记录 |
@@ -446,6 +446,74 @@ curl -X POST {{baseUrl}}/v1/shipments \
   }
 }
 ```
+
+### 更新运单
+
+更新已存在运单的 **operator(OP,操作员)** 和 **co-operators(协作操作员)**。此接口仅支持更新这两个字段 —— 请求体中的其他字段会被忽略(不是通用的运单更新接口)。
+
+**URL** : `/v1/shipments/:id` —— `:id` 是创建运单时返回的 `ext_id`。
+
+**方法** : `PUT`
+
+**需要认证** : 是
+
+**API 调用**
+
+```
+PUT {{baseUrl}}/v1/shipments/0f7f9c4e-6e76-4f0c-a5d4-2a7f77ab1234
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "operator": "jsmith",
+  "co_operators": ["alice", "bob"]
+}
+```
+
+**curl 示例**
+
+```bash
+curl -X PUT {{baseUrl}}/v1/shipments/0f7f9c4e-6e76-4f0c-a5d4-2a7f77ab1234 \
+-H "Authorization: Bearer {{token}}" \
+-H "Content-Type: application/json" \
+-d '{
+  "operator": "jsmith",
+  "co_operators": ["alice", "bob"]
+}'
+```
+
+**请求体字段**
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| operator | string \| object \| null | OP 用户名。可传用户名字符串,或 `{ "username": "...", "name": "...", "email": "..." }`。传 `null` 清空 operator。 |
+| co_operators | string[] | 协作操作员用户名数组(或 `{ "username": "..." }` 对象)。传 `[]` 清空所有协作操作员。 |
+
+**最容易忽略的规则**
+
+| 规则 | 原因 |
+|------|------|
+| `:id` 是 `ext_id` | 用创建时返回的 `ext_id`,不是内部自增 id |
+| 只应用 `operator` / `co_operators` | 请求体中的其他字段会被忽略 |
+| 未传的字段保持不变 | 只更新你传了的字段;要清空请传 `operator: null` / `co_operators: []` |
+| 用户按 `username` 匹配 | 已存在用户按用户名匹配;不存在的用户名只有在同时传了 `name` 和 `email` 时才会被创建,否则返回 `400` |
+
+**成功响应**
+
+**代码** : `200 OK`
+
+```json
+{
+  "success": true
+}
+```
+
+**错误响应**
+
+| 代码 | 场景 |
+|------|------|
+| `400` | 未提供可更新字段、`co_operators` 不是数组,或用户名无法匹配/创建 |
+| `404` | 找不到该 `ext_id` 对应的运单 |
 
 ### 查询运单
 
