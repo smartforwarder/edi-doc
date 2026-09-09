@@ -25,7 +25,7 @@
 | 认证 | `POST /auth/local` | 获取后续接口使用的 JWT |
 | 健康检查 | `GET /v1/health` | 快速确认 token 和网络都正常 |
 | 联系人 | `GET /v1/contacts`、`GET /v1/contacts/:id` | 需要显式传 SmartForwarder 联系人 ID 时使用 |
-| 运单 | `POST/GET/PUT/DELETE /v1/shipments`、`POST /v1/shipments/:id/memos` | EDI 运单主流程 |
+| 运单 | `POST/GET/PUT/DELETE /v1/shipments`、`POST /v1/shipments/:id/hbls`、`POST /v1/shipments/:id/memos` | EDI 运单主流程 |
 | 单据 | `GET/POST /v1/shipments/:id/documents`、`PUT/DELETE /v1/documents/:id` | 运单附件管理 |
 | 财务 | `POST /v1/araps`、`GET /v1/transactions` | 创建应收应付和查询交易 |
 
@@ -369,6 +369,7 @@ curl {{baseUrl}}/v1/contacts/CONTACT_001 \
 | `GET` | `/v1/shipments` | 查询运单 |
 | `GET` | `/v1/shipments/:id` | 按 `ext_id` 获取单票运单 |
 | `PUT` | `/v1/shipments/:id` | 更新运单的 operator / co-operators |
+| `POST` | `/v1/shipments/:id/hbls` | 向已有运单新增一票 HBL |
 | `DELETE` | `/v1/shipments/:id` | 删除运单 |
 | `POST` | `/v1/shipments/:id/memos` | 为运单添加备注 |
 | `POST` | `/v1/araps` | 创建应收应付记录 |
@@ -514,6 +515,61 @@ curl -X PUT {{baseUrl}}/v1/shipments/0f7f9c4e-6e76-4f0c-a5d4-2a7f77ab1234 \
 |------|------|
 | `400` | 未提供可更新字段、`co_operators` 不是数组,或用户名无法匹配/创建 |
 | `404` | 找不到该 `ext_id` 对应的运单 |
+
+### 向已有运单新增 HBL
+
+通过与平台相同的 Shipment 更新流程新增一票 HBL。请求体直接传一个 HBL 对象，支持的字段与创建运单时 `hbls` 数组中的单项一致，包括联系人和箱信息。
+
+**URL** : `/v1/shipments/:id/hbls` —— `:id` 是运单的 `ext_id`，不是数据库数字 ID。
+
+**方法** : `POST`
+
+**需要认证** : 是
+
+**curl 示例**
+
+```bash
+curl -X POST {{baseUrl}}/v1/shipments/0f7f9c4e-6e76-4f0c-a5d4-2a7f77ab1234/hbls \
+-H "Authorization: Bearer {{token}}" \
+-H "Content-Type: application/json" \
+-d '{
+  "hbl_no": "HPTE260927",
+  "shipper": {
+    "id": "SHIPPER-001",
+    "name": "Example Shipper"
+  },
+  "consignee": {
+    "id": "CONSIGNEE-001",
+    "name": "Example Consignee"
+  },
+  "pieces": 10,
+  "weight": 1200,
+  "weightUnit": "KG",
+  "containers": [
+    {
+      "name": "MSCU1234567",
+      "seal_number": "SEAL-001",
+      "size": "40",
+      "type": "HC"
+    }
+  ]
+}'
+```
+
+联系人映射规则与创建运单一致：最好传稳定的上游 contact `id`；没有 `id` 时以 `name` 作为 fallback；如果已经知道 SmartForwarder 联系人 ID，可以传 `{ "id": 123, "sf_internal": true }` 直接使用。`agent` 自动使用当前 EDI 用户绑定的联系人。调用方传入的 HBL `id`、`ext_id`、Shipment/MBL 关系以及箱子的关系 ID 都会被忽略。`hbl_no` 为空时，SmartForwarder 会按该运单所在店铺的编号规则自动生成。
+
+**成功响应**
+
+```json
+{
+  "success": true,
+  "data": {
+    "ext_id": "4a692783-46c2-4af7-a413-9f95b9f8591b"
+  }
+}
+```
+
+后续 HBL 相关对接使用响应里的 HBL `ext_id`。目标运单不属于当前 EDI 用户的 shop 时返回 `404`；HBL 号重复时，按平台相同的店铺配置和冲突规则处理。
 
 ### 查询运单
 
