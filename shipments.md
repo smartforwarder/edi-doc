@@ -25,7 +25,7 @@ Chinese version: [README_ZH.md](./README_ZH.md)
 |------|-----------|-------|
 | Auth | `POST /auth/local` | Get the JWT used by authenticated calls |
 | Health | `GET /v1/health` | Fast token and connectivity check |
-| Shipments | `POST/GET/PUT/DELETE /v1/shipments` | Core shipment create and lookup flow |
+| Shipments | `POST/GET/PUT/DELETE /v1/shipments`, `POST /v1/shipments/:id/hbls` | Core shipment create and lookup flow |
 | Shipment Memos | `POST /v1/shipments/:id/memos` | Add operational notes to a shipment |
 | Documents | `GET/POST /v1/shipments/:id/documents`, `PUT/DELETE /v1/documents/:id` | Shipment document management |
 | Finance | `POST /v1/araps`, `GET /v1/transactions` | AR/AP creation and transaction lookup |
@@ -201,6 +201,7 @@ The following authenticated endpoints are currently available in addition to the
 | `GET` | `/v1/shipments` | Search shipments |
 | `GET` | `/v1/shipments/:id` | Get a shipment by `ext_id` |
 | `PUT` | `/v1/shipments/:id` | Update a shipment |
+| `POST` | `/v1/shipments/:id/hbls` | Add one HBL to an existing shipment |
 | `DELETE` | `/v1/shipments/:id` | Delete a shipment |
 | `POST` | `/v1/shipments/:id/memos` | Add a shipment memo |
 | `POST` | `/v1/araps` | Create AR/AP records |
@@ -278,6 +279,59 @@ curl -X POST {{baseUrl}}/v1/shipments \
   }
 }
 ```
+
+### Add an HBL to an existing shipment
+
+Add one new HBL through the same shipment update workflow used by the platform. The request body is one HBL object and supports the same fields as one item in the shipment-create `hbls` array, including contacts and containers.
+
+**URL** : `/v1/shipments/:id/hbls` — `:id` is the shipment `ext_id`, not its numeric database ID.
+
+**Method** : `POST`
+
+**Auth required** : YES
+
+```bash
+curl -X POST {{baseUrl}}/v1/shipments/fb46738c-3550-40a7-a035-89c277d1651e/hbls \
+-H "Authorization: Bearer {{token}}" \
+-H "Content-Type: application/json" \
+-d '{
+  "hbl_no": "HPTE260927",
+  "shipper": {
+    "id": "SHIPPER-001",
+    "name": "Example Shipper"
+  },
+  "consignee": {
+    "id": "CONSIGNEE-001",
+    "name": "Example Consignee"
+  },
+  "pieces": 10,
+  "weight": 1200,
+  "weightUnit": "KG",
+  "containers": [
+    {
+      "name": "MSCU1234567",
+      "seal_number": "SEAL-001",
+      "size": "40",
+      "type": "HC"
+    }
+  ]
+}'
+```
+
+Contact mapping follows shipment creation: a stable upstream contact `id` is preferred, `name` is used as the fallback when `id` is missing, and `{ "id": 123, "sf_internal": true }` uses a known SmartForwarder contact directly. The authenticated EDI user's linked contact is used as `agent`. Caller-supplied HBL `id`, `ext_id`, Shipment/MBL relations, and container relation IDs are ignored. If `hbl_no` is empty, SmartForwarder generates it using the Shipment's configured numbering rule.
+
+**Success Response**
+
+```json
+{
+  "success": true,
+  "data": {
+    "ext_id": "4a692783-46c2-4af7-a413-9f95b9f8591b"
+  }
+}
+```
+
+Use the returned HBL `ext_id` in later HBL-specific integrations. A Shipment outside the authenticated user's shop returns `404`; a duplicate HBL number follows the same shop configuration and conflict rules as the platform.
 
 ### Search shipments 
 
