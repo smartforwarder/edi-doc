@@ -556,7 +556,9 @@ curl -X POST {{baseUrl}}/v1/shipments/0f7f9c4e-6e76-4f0c-a5d4-2a7f77ab1234/hbls 
 }'
 ```
 
-Contact mapping follows shipment creation: a stable upstream contact `id` is preferred, `name` is used as the fallback when `id` is missing, and `{ "id": 123, "sf_internal": true }` uses a known SmartForwarder contact directly. The authenticated EDI user's linked contact is used as `agent`. Caller-supplied HBL `id`, `ext_id`, Shipment/MBL relations, and container relation IDs are ignored. If `hbl_no` is empty, SmartForwarder generates it using the Shipment's configured numbering rule.
+Contact mapping follows shipment creation: a stable upstream contact `id` is preferred, `name` is used as the fallback when `id` is missing, and `{ "id": 123, "sf_internal": true }` uses a known SmartForwarder contact directly. By default, `agent` uses the authenticated EDI user's linked contact. With the shop-level `feature_edi_allow_agent_override` flag enabled on a supporting API version, an explicit `agent` uses the same internal-ID or upstream-ID/name mapping; omitted or null `agent` still uses the account's linked contact.
+
+Caller-supplied HBL `id`, `ext_id`, Shipment/MBL relations, and container relation IDs are ignored. If `hbl_no` is empty, SmartForwarder generates it using the Shipment's configured numbering rule.
 
 **Success Response**
 
@@ -759,9 +761,20 @@ Build the payload in three layers:
 - Contact-type fields such as `shipper`, `consignee`, `notify`, `customer`, `bill_to`, `carrier`, and similar fields on `ombl` / `hbls` should preferably provide a stable upstream `id`.
 - If `id` is omitted but `name` is present, the server generates a deterministic fallback source id from the normalized contact name.
 - If both `id` and `name` are missing, the contact field is stored as `null`.
-- `agent` is handled separately by the authenticated EDI user's linked contact.
+- By default, `agent` uses the authenticated EDI user's linked contact, overriding any caller-supplied agent. The optional shop-level `feature_edi_allow_agent_override` flag changes this for shipment creation and adding HBLs, as described below.
 - Passing an explicit upstream contact `id` is still recommended when available, but for your current integration a consistent full contact name is enough to keep the mapping stable.
 - **Direct SmartForwarder contact ID**: If you already know the SmartForwarder internal contact ID (e.g. from `GET /v1/contacts`), you can pass `{ "id": 123, "sf_internal": true }` to skip the contact mapping entirely. The ID will be used as-is.
+
+**Optional Agent override**
+
+This requires deployment of an API version supporting `feature_edi_allow_agent_override` and an administrator enabling the flag for your shop. The flag is disabled by default; enabling the setting alone does not update the deployed API.
+
+- Applies to `ombl.agent` and each `hbls[].agent` in `POST /v1/shipments`, and `agent` in `POST /v1/shipments/:id/hbls`.
+- For a known SmartForwarder contact, send `{ "id": 123, "sf_internal": true }`. The internal ID may be a number or a numeric string.
+- For upstream mapping, send `{ "id": "EASY-LINK", "name": "Easy Link" }`; if no upstream ID is available, `{ "name": "Easy Link" }` uses the existing name-based fallback mapping.
+- Omitted or null `agent` uses the EDI account's linked contact. OMBL and each HBL are resolved independently; omitting an HBL agent does not inherit the request's OMBL agent.
+- The flag applies to EDI accounts in the shop. It does not change authentication, shipment shop ownership, or AR/AP contact assignment.
+- `PUT /v1/shipments/:id` continues to accept only `operator` / `co_operators`; this flag does not enable Agent updates after creation.
 
 **Full shipment example**
 
