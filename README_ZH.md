@@ -556,7 +556,9 @@ curl -X POST {{baseUrl}}/v1/shipments/0f7f9c4e-6e76-4f0c-a5d4-2a7f77ab1234/hbls 
 }'
 ```
 
-联系人映射规则与创建运单一致：最好传稳定的上游 contact `id`；没有 `id` 时以 `name` 作为 fallback；如果已经知道 SmartForwarder 联系人 ID，可以传 `{ "id": 123, "sf_internal": true }` 直接使用。`agent` 自动使用当前 EDI 用户绑定的联系人。调用方传入的 HBL `id`、`ext_id`、Shipment/MBL 关系以及箱子的关系 ID 都会被忽略。`hbl_no` 为空时，SmartForwarder 会按该运单所在店铺的编号规则自动生成。
+联系人映射规则与创建运单一致：最好传稳定的上游 contact `id`；没有 `id` 时以 `name` 作为 fallback；如果已经知道 SmartForwarder 联系人 ID，可以传 `{ "id": 123, "sf_internal": true }` 直接使用。默认情况下，`agent` 使用当前 EDI 用户绑定的联系人。在支持此功能的 API 版本上启用店铺级 `feature_edi_allow_agent_override` 后，显式传入的 `agent` 可按相同规则使用内部 ID 或上游 ID／名称映射；省略或传 `null` 时仍使用账户绑定联系人。
+
+调用方传入的 HBL `id`、`ext_id`、Shipment/MBL 关系以及箱子的关系 ID 都会被忽略。`hbl_no` 为空时，SmartForwarder 会按该运单所在店铺的编号规则自动生成。
 
 **成功响应**
 
@@ -759,9 +761,20 @@ curl --location '{{baseUrl}}/v1/shipments/fe9748bd-be64-4a06-92ae-609ba19f65d3/m
 - `ombl` / `hbls` 上的 `shipper`、`consignee`、`notify`、`customer`、`bill_to`、`carrier` 等 contact 类型字段，最佳实践仍然是传你们上游系统里稳定的 `id`。
 - 如果没有传 `id`，但传了 `name`，服务端会基于规范化后的联系人名称生成稳定的 fallback source id。
 - 如果 `id` 和 `name` 都没有，该字段最终会被保存为 `null`。
-- `agent` 属于特例，会使用当前 EDI 用户绑定的联系人。
+- 默认情况下，`agent` 使用当前 EDI 用户绑定的联系人，覆盖调用方传入值。可选的店铺级开关 `feature_edi_allow_agent_override` 可为建单及新增 HBL 调整此行为，详见下文。
 - 对你们当前接入场景来说，只要联系人全称保持一致，就可以稳定映射；如果上游已经有稳定 `id`，仍然建议显式传入。
 - **直接使用 SmartForwarder 联系人 ID**：如果你已经知道 SmartForwarder 内部的联系人 ID（例如通过 `GET /v1/contacts` 查询得到），可以传 `{ "id": 123, "sf_internal": true }` 来跳过联系人映射，系统会直接使用该 ID。
+
+**可选的 Agent 覆盖功能**
+
+此功能需要部署支持 `feature_edi_allow_agent_override` 的 API 版本，并由管理员为店铺开启该开关。开关默认关闭；仅启用设置不会更新已部署的 API。
+
+- 适用于 `POST /v1/shipments` 中的 `ombl.agent`、各 `hbls[].agent`，以及 `POST /v1/shipments/:id/hbls` 中的 `agent`。
+- 已知 SmartForwarder 联系人时，传 `{ "id": 123, "sf_internal": true }`。内部 ID 支持数字或数字字符串。
+- 按上游联系人映射时，传 `{ "id": "EASY-LINK", "name": "Easy Link" }`；没有上游 ID 时，`{ "name": "Easy Link" }` 使用既有名称 fallback 映射。
+- 省略 `agent` 或传 `null` 时使用 EDI 账户绑定联系人。OMBL 和各 HBL 分别解析；省略 HBL 的 Agent 不会继承请求中的 OMBL Agent。
+- 此开关对店铺内 EDI 账户生效，不改变鉴权、货件店铺归属或 AR/AP 联系人赋值。
+- `PUT /v1/shipments/:id` 仍仅支持更新 `operator` / `co_operators`；此开关不开放建单后的 Agent 更新。
 
 **完整运单示例**
 
