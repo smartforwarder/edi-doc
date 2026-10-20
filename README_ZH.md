@@ -774,6 +774,8 @@ curl --location '{{baseUrl}}/v1/shipments/fe9748bd-be64-4a06-92ae-609ba19f65d3/m
 - 按上游联系人映射时，传 `{ "id": "EASY-LINK", "name": "Easy Link" }`；没有上游 ID 时，`{ "name": "Easy Link" }` 使用既有名称 fallback 映射。
 - 省略 `agent` 或传 `null` 时使用 EDI 账户绑定联系人。OMBL 和各 HBL 分别解析；省略 HBL 的 Agent 不会继承请求中的 OMBL Agent。
 - 此开关对店铺内 EDI 账户生效，不改变鉴权、货件店铺归属或 AR/AP 联系人赋值。
+- 在支持 Agent 读回的 API 版本中，开启此开关还会让 `GET /v1/shipments/:id` 和 `GET /v1/shipments` 返回 `ombl.agent` 及各 `hbls[].agent`。每项为包含 `id`、`ext_id`、`name`、`short_name`、`country`、`city` 的公开联系人对象；没有关联联系人时为 `null`。关闭开关时仍不返回这些字段。
+- 查询分单 Agent 时，请读取所属货件，并按分单 `ext_id` 匹配；当前没有 `GET /v1/hbls/:id` 接口。Memo 响应描述的是备注及其关联，备注中的 `hbl: null` 不代表货件分单没有 Agent。
 - `PUT /v1/shipments/:id` 仍仅支持更新 `operator` / `co_operators`；此开关不开放建单后的 Agent 更新。
 
 **完整运单示例**

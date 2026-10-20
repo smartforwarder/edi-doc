@@ -774,6 +774,8 @@ This requires deployment of an API version supporting `feature_edi_allow_agent_o
 - For upstream mapping, send `{ "id": "EASY-LINK", "name": "Easy Link" }`; if no upstream ID is available, `{ "name": "Easy Link" }` uses the existing name-based fallback mapping.
 - Omitted or null `agent` uses the EDI account's linked contact. OMBL and each HBL are resolved independently; omitting an HBL agent does not inherit the request's OMBL agent.
 - The flag applies to EDI accounts in the shop. It does not change authentication, shipment shop ownership, or AR/AP contact assignment.
+- On an API version supporting Agent readback, enabling this flag also adds `ombl.agent` and each `hbls[].agent` to `GET /v1/shipments/:id` and `GET /v1/shipments`. Each is a public contact object containing `id`, `ext_id`, `name`, `short_name`, `country`, and `city`, or `null` if no contact is assigned. When the flag is off, these response fields remain omitted.
+- To check an HBL Agent, read its parent shipment and match the HBL by `ext_id`; there is no `GET /v1/hbls/:id` endpoint. The memo response describes the memo and its relations, so a memo's `hbl: null` does not mean the shipment has no HBL Agent.
 - `PUT /v1/shipments/:id` continues to accept only `operator` / `co_operators`; this flag does not enable Agent updates after creation.
 
 **Full shipment example**
